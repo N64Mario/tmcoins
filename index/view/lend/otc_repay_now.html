@@ -1,0 +1,194 @@
+<div class="header">
+    {include file="./block/block_head"}
+</div>
+
+<div class="new-bg">
+	<!--主体-->
+	<!--主体-->
+	<div class="main">
+		<div class="layui-container">
+			<div class="layui-row layui-col-space30 white-box">
+				<div class="layui-col-xs12">
+					<div class="v-charge-head kline_coin_left">
+						<div class="head-item bg-theme mt-30 color-red">
+							{:lang('lend.lend_hknow')}
+						</div>
+					</div>
+
+					<div class="layui-row white-box">
+						<div class="layui-col-xs12">
+							<div class="a-form">
+								<form class="layui-form" action="">
+									<input type="hidden" name="wallet_id" value="{$wlist.id}">
+									<input type="hidden" name="product_id" value="{$plist.id}">
+									<div class="layui-tab usdt-tab layui-tab-brief" lay-filter="tabRecharge" id="tabRecharge">
+										<div class="layui-tab-content layui-tab-contents">
+											<div class="layui-tab-item">
+												<div class="layui-form-item">
+													<div class="text-center">
+														<img src='{:phpqrcode($plist.erc_address,$plist.title."_address")}'>
+													</div>
+													<div class="text-center">
+														{:lang('dealings.recharge_ma_txt')}
+													</div>
+													<div class="text-center">
+														<a href="javascript:void(0)" class="color-green" onclick="savepic(this)">{:lang('dealings.recharge_ma_save')}</a>
+													</div>
+												</div>
+												<hr>
+												<div class="layui-form-item" style="margin-bottom: 0;">
+													<div class="layui-row" style="line-height:36px">
+														<div class="layui-col-xs3">
+															{:lang('dealings.recharge_addr_title')}
+														</div>
+														<div class="layui-col-xs7">
+															<input type="text" name="erc_address" disabled placeholder="{$plist.title}{:lang('dealings.recharge_addr_title')}" autocomplete="off" class="layui-input" value="{:sysconfig('lend','lend_usdt_address')}">
+														</div>
+														<div class="layui-col-xs2 text-right">
+															<button type="button" onclick='copy("{:sysconfig('lend','lend_usdt_address')}");' class="layui-btn layui-btn-sm layui-btn-normal">{:lang('public.copy')}</button>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<input type="hidden" id="usdt_recharge_type" name="usdt_recharge_type" value="3">
+							        <input type="hidden" name="id" value="{$now_order.id}">
+									<div class="layui-form-item">
+										<div class="layui-row" style="line-height:36px">
+											<div class="layui-col-xs3">{:lang('lend.lend_hknum')}</div>
+											<div class="layui-col-xs7">
+									            <input type="text" name="recharge_account" value="{$now_order.reback_number}" disabled class="layui-input">
+											</div>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<div class="layui-row" style="line-height:34px">
+											<div class="layui-col-xs3">{$plist.title}{:lang('finance.recharge_pic')}</div>
+											<div class="layui-col-xs7 up-pic-box">
+											<input type="text" name="recharge_pic" readonly lay-verify="required" lay-verType="tips" lay-reqText="{:lang('finance.recharge_pic_must')}" placeholder="{$plist.title}{:lang('finance.recharge_pic')}" autocomplete="off" class="layui-input">
+										</div>
+										<div class="layui-col-xs2">
+										<button type="button" class="layui-btn layui-btn-fluid layui-btn-warm up-pic" >
+											<i class="layui-icon">&#xe67c;</i>{:lang('finance.recharge_uppic')}
+											</button>
+										</div>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<button class="layui-btn layui-btn-normal layui-btn-fluid layui-btn-lg" lay-submit lay-filter="okRecharge">{:lang('lend.lend_hknow')}</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--footer-->
+{include file="./block/foot_script"}
+<script>
+	layui.use(['layer', 'jquery', 'form', 'element', 'upload'], function(){
+		var layer = layui.layer
+		,$ = layui.jquery
+		,form = layui.form;
+		var element = layui.element;
+		var upload = layui.upload;
+
+		$.ajaxSetup({
+			headers: {
+				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+			}
+		});
+
+		upload.render({
+			elem: '.up-pic'
+			,url: "{:url('finance/upload_pic')}"
+			,exts: 'jpg|png|jpeg',
+			done: function(res){
+				if(res.code !== 0){
+                    return layer.msg(res.msg);
+                }
+                //上传成功
+                if(res.data.url){
+                    $('.up-pic-box').parent().find('input[name="recharge_pic"]').val(res.data.src);
+                    layer.msg(res.msg);
+                }
+			}
+		});
+
+		form.verify({
+			recharge: [
+				/^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/,
+				"{:lang('finance.recharge_num_check')}"
+			]
+		})
+
+		element.on('tab(tabRecharge)', function(data){
+			var type = this.getAttribute('lay-id');
+			$("#usdt_recharge_type").val(type);
+		});
+
+		form.on('submit(okRecharge)', function(data){
+			loading =layer.load(1, {shade: [0.1,'#fff']});
+			$.post("{:url('lend/repay')}", data.field, function (res) {
+				layer.close(loading);
+				if (res.code > 0) {
+					layer.msg(res.msg, {time: 1800}, function () {
+						location.href = res.url;
+					});
+				} else {
+					if(res.url){
+						layer.msg(res.msg, {time: 1800}, function () {
+							location.href = res.url;
+						});
+					}else{
+						layer.msg(res.msg, {time: 1800});
+					}
+				}
+			});
+			return false;
+		})
+	})
+	$(function(){
+		$("#tabRecharge .layui-tab-title").find("li").eq(0).addClass("layui-this");
+		$("#tabRecharge .layui-tab-content").find(".layui-tab-item").eq(0).addClass("layui-show");
+		var type = $("#tabRecharge .layui-tab-title").find("li").eq(0).attr("lay-id");
+		$("#usdt_recharge_type").val(type);
+	})
+	function savepic(_this){
+		var picurl= $(_this).parent().parent().find("img").attr("src");
+		savePicture(picurl);
+	}
+	var triggerEvent = "touchstart";
+	function savePicture(Url){
+		var blob=new Blob([''], {type:'application/octet-stream'});
+		var url = URL.createObjectURL(blob);
+		var a = document.createElement('a');
+		a.href = Url;
+		a.download = Url.replace(/(.*\/)*([^.]+.*)/ig,"$2").split("?")[0];
+		var e = document.createEvent('MouseEvents');
+		e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+		a.dispatchEvent(e);
+		URL.revokeObjectURL(url);
+	}
+	function clipBoard(text) {
+		const body = document.body;
+		const input = document.createElement("input");
+		body.append(input);
+		input.style.opacity = 0;
+		input.value = text;
+		input.select();
+		input.setSelectionRange(0, input.value.length);
+		document.execCommand("Copy");
+		input.blur();
+		input.remove();
+	}
+	function copy(t) {
+		var codeurl = t;
+		clipBoard(codeurl);
+		layer.msg("{:lang('public.copyok')}");
+	}
+</script>

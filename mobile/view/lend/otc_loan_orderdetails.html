@@ -1,0 +1,259 @@
+<!--
+ * @Author: Fox Blue
+ * @Date: 2021-08-17 15:53:49
+ * @LastEditTime: 2021-09-02 00:04:51
+ * @Description: Forward, no stop
+-->
+<link rel="stylesheet" href="__STATIC__/mobile/css/defi.css" media="all">
+<link rel="stylesheet" href="__STATIC__/iconfont/iconfont.css" media="all">
+<style>
+    .inner-head a{
+        display: block;
+        width: 0.5rem;
+        height: 0.5rem;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 2;
+    }
+    .inner-head a i{
+        color: #ffffff;
+        font-size: 0.2rem;
+    }
+    .layui-layer-dialog{
+        background-color: #191e34!important;
+        border: 1px solid #30364c!important;
+        border-radius: 0.04rem;
+        overflow: hidden;
+    }
+    .layui-layer-title{
+        background-color: #191e34!important;
+        border: 1px solid #30364c!important;
+        color: #f5f5f5!important;
+    }
+    .layui-layer-content p{
+        color: #f5f5f5!important;
+    }
+    .layui-layer-btn .layui-layer-btn0{
+        background-color: #019980!important;
+        border-color: #019980!important;
+    }
+
+
+    .progress_box{
+        width: 100%;
+        padding-left: 0.1rem;
+    }
+    .progress_box li{
+        position: relative;
+        padding: 0 21px;
+        list-style: none;
+        height: 0.56rem;
+        border-left: 1px solid #565e71;
+    }
+    .progress_box li:before {
+        content: "";
+        display: block;
+        position: absolute;
+        /* margin-left: -6px; */
+        top: 0;
+        left: -5px;
+        width: 10px;
+        height: 10px;
+        /* line-height: 22px; */
+        text-align: center;
+        background: #565e71;
+        /* color: #fff; */
+        /* font-size: 14px; */
+        border-radius: 50%;
+    }
+    .last_progress{
+        border: none!important;
+    }
+    .last_newprogress::before{
+        content: "●";
+        display: table-cell;
+        position: absolute;
+        vertical-align: middle;
+        /* margin-left: -6px; */
+        /* top: 0; */
+        left: -5px;
+        width: 10px;
+        height: 10px;
+        line-height: 6px;
+        text-align: center;
+        background: #00a17b;
+        color: #00a17b;
+        font-size: 18px;
+        border-radius: 50%;
+    }
+    .progress_content{
+        position: absolute;
+        top: -4px;
+        width: calc(100% - 0.31rem);
+    }
+    .progress_title{
+        max-width: 50%;
+        height: 0.2rem;
+        line-height: 0.2rem;
+        font-size: 0.14rem;
+        color: #4c5469;
+        margin-bottom: 3px;
+    }
+    .progress_time{
+        max-width: 50%;
+        height: 0.2rem;
+        line-height: 0.2rem;
+        color: #4c5469;
+        text-align: right;
+        font-size: 0.14rem;
+    }
+    .progress_illustratebox{
+        position: absolute;
+        top: 0.16rem;
+        width: calc(100% - 0.31rem);
+        padding: 0.05rem 0rem;
+    }
+    .progress_illustrate{
+        width: 100%;
+        max-height: 0.3rem;
+        min-height: 0.15rem;
+        line-height: 0.15rem;
+        color: #4c5469;
+        font-size: 0.12rem;
+    }
+    .active{
+        color: #00a17b;
+    }
+</style>
+<div class="a-header position-re layui-rows">
+    <div class="layui-col-xs4">
+        <a href="javascript:window.history.go(-1);"><i class="layui-icon layui-icon-left"></i></a>
+    </div>
+	<div class="layui-col-xs4 text-center">
+		{:lang('lend.lend_detail')}
+	</div>
+	<div class="layui-col-xs4 text-right">
+        <a href="{:url('/mobile')}"><i class="layui-icon layui-icon-home"></i></a>
+    </div>
+</div>
+
+
+<div class="loan-orderdetails-content">
+    {if condition="$now_order['status'] eq 0"}
+    <div class="loan-orderdetails-state red">{:lang('lend.lend_status0')}</div>
+    {elseif condition="$now_order['status'] eq 1"/}
+    <div class="loan-orderdetails-state red">{:lang('lend.lend_status1')}</div>
+    {elseif  condition="$now_order['status'] eq 2 and $now_order['orver_time']"/}
+    <div class="loan-orderdetails-state green">{:lang('lend.lend_status6')}</div>
+    {elseif  condition="$now_order['status'] eq 2"/}
+    <div class="loan-orderdetails-state green">{:lang('lend.lend_status2')}</div>
+    {elseif  condition="$now_order['status'] eq 5"/}
+    <div class="loan-orderdetails-state red">{:lang('lend.lend_status5')}</div>
+    {elseif  condition="$now_order['status'] eq 3"/}
+    <div class="loan-orderdetails-state red">{:lang('lend.lend_status3')}</div>
+    {else/}
+    <div class="loan-orderdetails-state red">{:lang('lend.lend_status4')}</div>
+    {/if}
+    <div class="loan-orderdetails-process">
+        <!--步骤进度条-->
+        <ul class="progress_box">
+            
+        {if condition="$now_order['status'] eq 1 || $now_order['status'] eq 2 || $now_order['status'] eq 3 || $now_order['status'] eq 5"/}
+            <li class="last_newprogress"><div class="progress_content wl_flex wl_align_center wl_justify_between"><p class="progress_title text-overflow active">{:lang('lend.lend_detail_status1')}</p><p class="progress_time text-overflow">{$now_order['confirm_time']}</p></div><div class="progress_illustratebox"><p class="progress_illustrate text-overflow2">{:lang('lend.lend_detail_tips')}</p></div></li>
+        {/if}
+        {if condition="$now_order['status'] eq 4"/}
+            <li class="last_newprogress"><div class="progress_content wl_flex wl_align_center wl_justify_between"><p class="progress_title text-overflow active">{:lang('lend.lend_detail_status4')}</p><p class="progress_time text-overflow">{$now_order['confirm_time']}</p></div><div class="progress_illustratebox"><p class="progress_illustrate text-overflow2">{:lang('lend.lend_kefu')}</p></div></li>
+        {/if}
+            
+            <li><div class="progress_content wl_flex wl_align_center wl_justify_between"><p class="progress_title text-overflow {if condition="$now_order['status'] eq 0"}active{/if}">{:lang('lend.lend_detail_status0')}</p><p class="progress_time text-overflow">{$now_order['create_time']}</p></div><div class="progress_illustratebox"><p class="progress_illustrate text-overflow2"></p></div></li>
+            <li class="last_progress"><div class="progress_content wl_flex wl_align_center wl_justify_between"><p class="progress_title text-overflow">{:lang('lend.lend_detail_service')}</p><p class="progress_time text-overflow">{$now_order['create_time']}</p></div><div class="progress_illustratebox"><p class="progress_illustrate text-overflow2"></p></div></li>
+        </ul>
+    </div>
+    <div class="loan-orderdetails-databox">
+        <div class="loan-orderdetails-dataheader wl_flex wl_align_center wl_justify_between">
+            <div class="loan-orderdetails-dataheaderl wl_flex wl_align_center">
+                <p class="loan-orderdetails-dataname text-overflow">{:lang('lend.lend_title')}</p>
+            </div>
+            <div class="loan-orderdetails-dataheaderr">
+                <p class="loan-orderdetails-datanum"><span class="num">{$now_order['lend_number']}</span> USDT</p>
+            </div>
+        </div>
+        <div class="loan-orderdetails-datanav">
+            <ul class="loan-orderdetails-dataul">
+                <li class="loan-orderdetails-datali wl_flex wl_align_center wl_justify_between">
+                    <p class="loan-orderdetails-datalil text-overflow">{:lang('lend.lend_jktime')}</p>
+                    <p class="loan-orderdetails-datalir text-overflow">{$now_order['create_time']}</p>
+                </li>
+                <li class="loan-orderdetails-datali wl_flex wl_align_center wl_justify_between">
+                    <p class="loan-orderdetails-datalil text-overflow">{:lang('lend.lend_jkday')}</p>
+                    <p class="loan-orderdetails-datalir text-overflow"><span>{$now_order['lend_time']}</span>（{:lang('time_format.day')}）</p>
+                </li>
+                <li class="loan-orderdetails-datali wl_flex wl_align_center wl_justify_between">
+                    <p class="loan-orderdetails-datalil text-overflow">{:lang('lend.lend_hktime')}</p>
+                    <p class="loan-orderdetails-datalir text-overflow">{$now_order['end_time']}</p>
+                </li>
+                <li class="loan-orderdetails-datali wl_flex wl_align_center wl_justify_between">
+                    <p class="loan-orderdetails-datalil text-overflow">{:lang('lend.lend_jkratio')}</p>
+                    <p class="loan-orderdetails-datalir text-overflow">{$now_order['lend_interest']}%</p>
+                </li>
+
+                <li class="loan-orderdetails-datali wl_flex wl_align_center wl_justify_between">
+                    <p class="loan-orderdetails-datalil text-overflow">{:lang('lend.lend_hk_realmoney')}</p>
+                    <p class="loan-orderdetails-datalir text-overflow"><span>{$now_order['reback_number']}</span>USDT</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="loan-orderdetails-bottom">
+        <div class="loan-orderdetails-bottomherder">
+            <ul class="loan-orderdetails-bottomul">
+                <li class="loan-orderdetails-bottomli wl_flex wl_align_center wl_justify_between">
+                    <p class="loan-orderdetails-bottomlil">{:lang('lend.lend_order_status')}</p>
+                    <p class="loan-orderdetails-bottomlir">
+                        {switch name="now_order['status']" }
+                            {case value="0"}{:lang('lend.lend_status0')}{/case}
+                            {case value="1"}{:lang('lend.lend_status1')}{/case}
+                            {case value="2"}{:lang('lend.lend_status2')}{/case}
+                            {case value="3"}{:lang('lend.lend_status3')}{/case}
+                            {case value="4"}{:lang('lend.lend_status4')}{/case}
+                            {default /}--
+                        {/switch}
+                    </p>
+                </li>
+                <li class="loan-orderdetails-bottomli wl_flex wl_align_center wl_justify_between">
+                    <p class="loan-orderdetails-bottomlil">{:lang('lend.lend_order_number')}</p>
+                    <div class="loan-orderdetails-bottomlir wl_flex wl_align_center">
+                        <div class="num"><p class="text-overflow" id="copy_num">{$now_order['order_number']}</p></div>
+                        <button type="button" class="loan-orderdetails-copybtn text-overflow" name="copybtn" data-clipboard-action="copy" data-clipboard-target="#copy_num">{:lang('lend.lend_copy')}</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="loan-orderdetails-btnlinkbox wl_flex wl_align_center">
+            <a class="loan-orderdetails-btnlinkboxs" href="{:url('lend/otc_loan_now')}">
+                <div class="loan-orderdetails-btnlinkboxnav text-overflow">{:lang('lend.lend_again')}</div>
+            </a>
+            <a class="loan-orderdetails-btnlinkboxs" href="{:sysconfig('base','site_kefu')}">
+                <div class="loan-orderdetails-btnlinkboxnav text-overflow">{:lang('lend.lend_kefu')}</div>
+            </a>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="__STATIC__/mobile/js/clipboard.min.js"></script>
+<script type="text/javascript">
+    //复制文本 JS
+    var clipboard = new Clipboard('.loan-orderdetails-copybtn');
+    clipboard.on('success', function(e) {
+        layer.msg('{:lang('lend.lend_copyok')}');
+        // console.log("复制成功");
+        console.log(e);
+    });
+    clipboard.on('error', function(e) {
+        layer.msg('{:lang('lend.lend_copyfail')}');
+        // console.log("");
+        console.log(e);
+    });
+</script>
+<!--footer-->
+{include file="./block/foot_script"}

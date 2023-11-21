@@ -1,0 +1,115 @@
+<!--
+ * @Author: Fox Blue
+ * @Date: 2021-05-31 13:44:29
+ * @LastEditTime: 2021-09-17 12:17:49
+ * @Description: Forward, no stop
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{:sysconfig('site','site_name')}</title>
+    <link href="{:sysconfig('site','site_ico')}" type="image/x-icon" rel="shortcut icon">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <link rel="stylesheet" href="__STATIC__/admin/css/public.css?v={$version}" media="all">
+    <script>
+        window.CONFIG = {
+            ADMIN: "{$adminModuleName|default='admin'}",
+            CONTROLLER_JS_PATH: "{$thisControllerJsPath|default=''}",
+            ACTION: "{$thisAction|default=''}",
+            AUTOLOAD_JS: "{$autoloadJs|default='false'}",
+            IS_SUPER_ADMIN: "{$isSuperAdmin|default='false'}",
+            // VERSION: "{$version|default='1.0.0'}",
+            VERSION: Date.parse(new Date())/1000,
+        };
+    </script>
+    
+    <script src="__STATIC__/lang/zh-cn.js?v={$version}" charset="utf-8"></script>
+    <script src="__STATIC__/plugs/layui-v2.5.6/layui.all.js?v={$version}" charset="utf-8"></script>
+    <script src="__STATIC__/plugs/require-2.3.6/require.js?v={$version}" charset="utf-8"></script>
+    <script src="__STATIC__/config-admin.js?v={$version}" charset="utf-8"></script>
+</head>
+<body>
+{__CONTENT__}
+<script type="text/javascript" charset="utf-8">
+    var ws = new WebSocket("wss://www.global-cointiger.com/wss");
+    var count = 0;
+    var count2 = 0;
+    var count3 = 0;
+    
+    
+    
+    ws.onopen = function()
+    {
+ 		 ws.send(JSON.stringify({
+ 		    'find':'orderts'
+ 		 }));
+
+ 		 pingMe();
+    };
+    ws.close = function(){
+        pingMe();
+    }
+    ws.onmessage = function (evt) 
+    { 
+          var msg = JSON.parse(evt.data);
+          if(msg.type == 'orderts'){
+              if(msg.iscz!=''){
+                 if(count < msg.iscz){
+                       var audio= new Audio('__STATIC__/index/sound/recharge.mp3');
+                       audio.play();
+                       count = msg.iscz;
+                       audio = null;
+                 }    
+              }
+              setTimeout(function(){
+                  if(msg.istx!=''){
+                      
+                     if(count2 < msg.istx){
+                           var audio2= new Audio('__STATIC__/index/sound/withdraw.mp3');
+                           audio2.play();
+                           count2 = msg.istx;
+                           audio2 = null;
+                     }
+                  }
+              },4000);
+              setTimeout(function(){
+                    if(msg.iscard!=''){
+                        
+                        if(count3 < msg.iscard){
+                           var audio3= new Audio('__STATIC__/index/sound/tixing.mp3');
+                           audio3.play();
+                           count3 = msg.iscard;
+                           audio3 = null;
+                        }
+                  }
+              },9000);
+          }
+    };
+    ws.close = function(){
+        pingMe();
+       
+    }
+    function pingMe(){
+        //响应服务器，避免断开连接
+        var timesRun = false;
+        if(timesRun == false && ws.readyState===1) {
+            var interval = setInterval(function(){
+     			ws.send(JSON.stringify({
+     			    'type':'ping'
+     			}));
+            }, 5000);
+            timesRun = true
+        }
+    }
+
+   
+</script>
+</body>
+</html>

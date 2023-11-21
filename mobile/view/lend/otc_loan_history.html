@@ -1,0 +1,187 @@
+<!--
+ * @Author: Fox Blue
+ * @Date: 2021-08-17 15:53:49
+ * @LastEditTime: 2021-09-02 00:04:51
+ * @Description: Forward, no stop
+-->
+<link rel="stylesheet" href="__STATIC__/mobile/css/defi.css" media="all">
+<link rel="stylesheet" href="__STATIC__/iconfont/iconfont.css" media="all">
+<div class="a-header position-re layui-rows">
+    <div class="layui-col-xs4">
+        <a href="javascript:window.history.go(-1);"><i class="layui-icon layui-icon-left"></i></a>
+    </div>
+	<div class="layui-col-xs4 text-center">
+		{:lang('lend.lend_history')}
+	</div>
+	<div class="layui-col-xs4 text-right">
+        <a href="{:url('/mobile')}"><i class="layui-icon layui-icon-home"></i></a>
+    </div>
+</div>
+
+<div class="loan-bill-content">
+    {if condition="!empty($now_order)"}
+    <div class="loan-history-box">
+        <ul class="loan-history-nav">
+            <li class="loan-history-boxs2 wl_flex wl_align_center wl_justify_between">
+                <div class="loan-history-boxs2l">
+                    <p class="loan-history-boxs2l-top text-overflow"><span data-num="{$now_order['lend_number']}">{$now_order['lend_number']}</span>USDT</p>
+
+                    <p class="loan-history-boxs2l-bom text-overflow">{:lang('lend.lend_addtime')}：<span>{$now_order.create_time}</span></p>
+                </div>
+                <div class="loan-history-boxs2r">
+                    <a class="loan-history-boxs2r-link" href="{:url('otc_repay_now',['id'=>$now_order['id']])}">
+                        <div class="loan-history-btn text-overflow">{:lang('lend.lend_hknow')}</div>
+                    </a>
+                </div>
+            </li>
+            <li class="loan-history-boxs wl_flex wl_align_center wl_justify_between">
+                <p class="loan-history-boxsl text-overflow">{:lang('lend.lend_hktime')}</p>
+                <p class="loan-history-boxsr text-overflow"><span>{$now_order['end_time']}</span></p>
+            </li>
+            <li class="loan-history-boxs wl_flex wl_align_center wl_justify_between">
+                <p class="loan-history-boxsl text-overflow">{:lang('lend.lend_hkday')}</p>
+                <p class="loan-history-boxsr text-overflow"><span>{$now_order.lend_time}</span>{:lang('time_format.day')}</p>
+            </li>
+            <li class="loan-history-boxs wl_flex wl_align_center wl_justify_between">
+                <p class="loan-history-boxsl text-overflow">{:lang('lend.lend_hkmoney')}</p>
+                <p class="loan-history-boxsr text-overflow"><span>{$now_order.reback_number}</span>（USDT）</p>
+            </li>
+        </ul>
+    </div>
+    {/if}
+    <div class="loan-history-listbox">
+        <div class="loan-history-listheader">{:lang('lend.lend_jkhistory')} <span></span></div>
+        <div class="loan-history-tabbox">
+       <!--     <div class="loan-history-tab">
+                <ul class="loan-history-tabnav wl_flex wl_align_center">
+                    <li class="loan-history-tabboxs active" data-id="2022" data-type="1">2022<div class="subscript"><i class="iconfont icon-xuanzejiaobiao"></i></div></li>
+                </ul>
+            </div>-->
+        </div>
+            
+        <div class="loan-history-list">
+            <ul class="loan-history-listnav" id="content">
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<script type="text/javascript" src="__STATIC__/mobile/js/lowgetmoredata.js"></script>
+<script type="text/javascript">
+
+    // 日期切换
+    $(function () {
+        // intervalData(true);
+        setInterval(function () {
+            // intervalData(false)
+        }, 6000)
+        //$('.login-box').hide().eq(0).show()
+        $(".loan-history-tabboxs").click(function () {
+            //$('.login-box').hide().eq($(this).data('type')).show()
+            $(".loan-history-tabboxs").removeClass('active');
+            $(this).addClass('active');
+             page = 0;
+             is_loading = false;
+             $("#content").html("");
+             getmore();
+            // if ($(this).attr('data-type') == 2) {
+            // } else if($(this).attr('data-type') == 1) {
+            // }
+        })
+        getmore();
+        function getmore(){
+            if(is_loading){
+                return false;
+            }
+            is_loading = true;
+            $.ajax({
+                url: "{:url('lend/json_otc_loan_history')}",
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    'page': page
+                },
+                success: function (res) {
+                    //console.log(res);
+                    if(res.code == 1){
+                        var html = '';
+
+                        $.each(res.data,function (index,item) {
+
+                            html +=  '<li class="loan-history-datas">\n' +
+                                '                        <a class="loan-history-dataslink" href="/mobile/lend/otc_loan_orderdetails?id='+item.id+'">\n' +
+                                '                            <div class="loan-history-datastop">\n' +
+                                '                                <div class="loan-history-datastopnav wl_flex wl_align_center wl_justify_between">\n' +
+                                '                                    <p class="left text-overflow">'+item.create_time+'</p>\n' ;
+                            if(item.status == 0){
+                                html +='                                    <p class="right red">{:lang('lend.lend_status0')}</p>\n' ;
+
+                            }else if(item.status == 1){
+                                html +='                                    <p class="right red">{:lang('lend.lend_status1')}</p>\n' ;
+                            }
+                            else if(item.status == 2){
+                                html +='                                    <p class="right text-overflow green">{:lang('lend.lend_status2')}</p>\n' ;
+                            }
+                            else if(item.status == 3){
+                                html +='                                    <p class="right red">{:lang('lend.lend_status3')}</p>\n' ;
+                            }
+                            else if(item.status == 5){
+                                html +='                                    <p class="right red">{:lang('lend.lend_status5')}</p>\n' ;
+                            }else{
+                                html +='                                    <p class="right red">{:lang('lend.lend_status4')}</p>\n' ;
+                            }
+                            html+=      '                                </div>\n' +
+                                '                            </div>\n' +
+                                '                            <div class="loan-history-datascen">\n' +
+                                '                                <div class="loan-history-datascennav wl_flex wl_align_center wl_justify_between">\n' +
+                                '                                    <p class="left text-overflow2">{:lang('lend.lend_money')}：'+item.lend_number+'(USDT)</p>\n' +
+                                '                                    <p class="right text-overflow2">{:lang('lend.lend_jkday')}：<span>'+item.lend_time+'</span>（{:lang('time_format.day')}）</p>\n' +
+                                '                                </div>\n' +
+                                '                                <div class="loan-history-datascennav wl_flex wl_align_center wl_justify_between">\n' +
+                                '                                    <p class="left text-overflow2">{:lang('lend.lend_hknum')}：'+item.reback_number+'(USDT)</p>\n' +
+                                '                                    <p class="right text-overflow2">{:lang('lend.lend_hktime')}：<span>'+item.end_time+'</span></p>\n' +
+                                '                                </div>\n' +
+                                '                            </div>\n' +
+                                '                        </a>\n' +
+                                '                    </li>';
+                        })
+
+                        page += 1;
+                        $('#content').append(html);
+
+                        is_loading  = false;
+                    }
+
+
+
+                }
+            });
+        }
+    });
+
+    // layui.use('layer', function () {
+    //     var layer = layui.layer;
+    //     //iframe层demo
+    //     $(".loan-history-boxs2r-link").click(function (){
+    //         layer.open({
+    //             type: 0,
+    //             title: '{:lang('lend.lend_tip')}',
+    //             content: '<p>{:lang('lend.lend_confirm')}</p>',
+    //             btn:['{:lang('lend.lend_confirm')}','{:lang('lend.lend_close')}'],
+    //             success:function(index,layero)
+    //             {
+    //                 //窗体弹出后回调方法
+
+    //             },
+    //             yes:function(index,layero)
+    //             {
+    //                 //点击按钮一后回调方法
+    //                 location.href="{:sysconfig('base','site_kefu')}"
+    //             }
+    //         });
+    //     });
+    // });
+</script>
+<!--footer-->
+{include file="./block/foot_script"}

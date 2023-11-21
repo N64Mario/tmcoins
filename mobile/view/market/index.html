@@ -1,0 +1,96 @@
+<!--
+ * @Author: Fox Blue
+ * @Date: 2021-07-12 16:20:09
+ * @LastEditTime: 2021-08-29 15:28:50
+ * @Description: Forward, no stop
+-->
+
+	<div class="a-header text-center">
+		{:lang('market.title')}
+	</div>
+	<!--主体-->
+	<div class="main padding-l-r">
+		<div class="a-table">
+			<!-- <h4><span>{:lang('market.USDT')}</span></h4> -->
+			<table class="layui-table fox-table" lay-skin="nob">
+				<thead>
+					<tr>
+						<th><span class="table-span">{:lang('market.symbol')}/{:lang('market.amount')}</span></th>
+						<th><span class="table-span">{:lang('market.price')}</span></th>
+						<th class="text-right"><span class="table-span">{:lang('home_page.coin_updown')}</span></th>
+					</tr> 
+				</thead>
+				<tbody>
+				   {volist name="product" id="vo"}
+					<tr onclick='go_kline("{$vo.code}");' style="cursor:pointer;">
+						<td><div class="market-list">
+							<img src="{$vo.logo}" width="24" height="24">
+								<div class="market-list-right">
+									<span class="link-b">{$vo.title}</span><span class="font-14">/{:lang('market.USDT')}</span>
+									<p class="font-14" style="line-height: 18px;">{:lang('market.amount')}<br><span id="amount_{$vo.code}">{$vo.volume|floatVal}</span></p>
+								</div>
+							</div>
+						</td>
+						<td>
+						   <span id="price_{$vo.code}">{$vo.last_price|floatVal}</span>
+					   </td>
+						<td class="text-right"><span id="change_{$vo.code}" {if $vo.change>0}class="layui-btn layui-btn-sm btn-green"{else}class="layui-btn layui-btn-sm btn-red"{/if}>{$vo.change|floatVal|fox_nums}%</span></td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+	{include file="./block/mobile_footmenu"}
+	{include file="./block/foot_script"}
+	<script src="__STATIC__/mobile/js/index/d3.v4.min.js?v={$version}"></script>
+	<script src="__STATIC__/mobile/js/index/index.js?v={$version}"></script>
+	<script>var page_out="market";</script>
+	<script src="__STATIC__/mobile/js/websocket.js?v={$version}"></script>
+	<script>
+		$(function(){
+			socket.sendData({
+				type: 'kline',
+				find: 'market',
+			},null,null)
+			setInterval(() => {
+	sufing()
+}, 3000);
+		})
+		function sufing() {
+	let td = $('.a-table tbody tr').find('td:nth-child(2) span')
+	let tds = $('.a-table tbody tr').find('td:nth-child(3) span')
+	let len = td.length
+	for (let i = 0; i < len; i++) {
+		let zf = 1
+		let fw = Math.ceil(Math.random()*5*zf)/1000
+		let f1 = $(tds).eq(i).text()
+		let f2 = $(td).eq(i).text()*1
+		f1=f1.replace('%','')*1
+		let fic = parseFloat((f2*fw).toFixed(2))
+		let fic1 = parseFloat(fw.toFixed(2))
+		fic = dealNum(f2,fic)
+		fic1 = dealNum(f1,fic1)
+		$(tds).eq(i).html(`${fic1>0?'+':''}${fic1}%`)
+		$(td).eq(i).html(fic)
+		// console.log(zf,fw,f1,f2,f1*1+fw,f2*fw + f2,`${fic1>0?'+':'-'}${fic1}%`)
+	}
+
+}
+function dealNum(f1,f2){
+	let f1str=f1.toString()
+	let point = f1str.indexOf('.')
+	let leng =f1str.length 
+	if(point>0){
+		let len = leng - 1-point
+		let num = (f1+f2).toFixed(len)
+		console.log(num);
+		return num
+	}
+	return f1+f2
+}
+		function go_kline(a){
+			storage.setItem("tobol",a);
+			location.href="{:url('deal/index')}";
+		}
+	</script>

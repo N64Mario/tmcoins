@@ -1,0 +1,211 @@
+<!--
+ * @Author: Fox Blue
+ * @Date: 2021-08-17 15:53:49
+ * @LastEditTime: 2021-09-02 00:04:51
+ * @Description: Forward, no stop
+-->
+<div class="header">
+	{include file="./block/block_head"}
+</div>
+<link rel="stylesheet" href="__STATIC__/index/css/scrollmenu.css" media="all">
+<link rel="stylesheet" href="__STATIC__/index/css/defi.css" media="all">
+<link rel="stylesheet" href="__STATIC__/iconfont/iconfont.css" media="all">
+
+<div class="loan-now-content">
+    <div class="layui-form">
+        <div class="loan-now-content-header">
+            <p class="loan-now-content-unit">USDT</p>
+            <div class="loan-now-content-numbox">
+                <div class="loan-now-content-numnav wl_flex wl_align_center wl_justify_between">
+                    <input type="tel" class="loan-now-content-numinput" name="amount" id="loan_num" placeholder="{:lang('lend.lend_number')}">
+                    <!--<button type="button" class="loan-now-content-allbtn" id="allbtn">{:lang('lend.lend_jcall')}</button>-->
+                </div>
+            </div>
+            <!--<p class="loan-now-content-availablebox text-overflow2">{:lang('lend.lend_max')} <span id="available" data-num="{:sysconfig('lend','lend_max')}">{:sysconfig('lend','lend_max')}</span> USDT</p>-->
+        </div>
+        <div class="loan-now-content-datebox">
+            <div class="loan-now-content-date wl_flex wl_align_center wl_justify_between">
+                <p class="loan-now-content-datel text-overflow">{:lang('lend.lend_jkday')}</p>
+                <p class="loan-now-content-dater text-overflow" onclick="showListbscroll()"><span id="loan_date">{$day}{:lang('time_format.day')}</span> <i class="iconfont icon-youbian"></i></p>
+            </div>
+            <div class="loan-now-content-idbox wl_flex wl_align_center wl_justify_between">
+                <p class="loan-now-content-idboxl text-overflow">{:lang('lend.lend_account')}</p>
+                <p class="loan-now-content-idboxr text-overflow"><span>{:session('member.username')}</span></p>
+            </div>
+        </div>
+        <div class="loan-now-content-databox">
+            <p class="loan-now-content-datatitle text-overflow">{:lang('lend.lend_xieyi')}</p>
+            <ul class="loan-now-content-datalist text-overflow">
+                <li class="loan-now-content-datas wl_flex wl_align_center wl_justify_between">
+                    <p class="loan-now-content-datasl text-overflow">{:lang('lend.lend_jk_number')}(USDT)</p>
+                    <p class="loan-now-content-datasr text-overflow" id="loan_num2">0</p>
+                </li>
+                <li class="loan-now-content-datas wl_flex wl_align_center wl_justify_between">
+                    <p class="loan-now-content-datasl text-overflow">{:lang('lend.lend_jkday')}</p>
+                    <p class="loan-now-content-datasr text-overflow" data-day="{$day}" id="loan_date2">{$day}{:lang('time_format.day')}</p>
+                </li>
+                <li class="loan-now-content-datas wl_flex wl_align_center wl_justify_between">
+                    <p class="loan-now-content-datasl text-overflow">{:lang('lend.lend_jk_ratio')}</p>
+                    <p class="loan-now-content-datasr text-overflow"><span id="lendRate">{:sysconfig('lend','lend_interest')}</span> %</p>
+                </li>
+                <li class="loan-now-content-datas wl_flex wl_align_center wl_justify_between">
+                    <p class="loan-now-content-datasl text-overflow">{:lang('lend.lend_hkmoney')}(USDT)</p>
+                    <p class="loan-now-content-datasr text-overflow" id="loan_num3">0</p>
+                </li>
+                <li class="loan-now-content-datas wl_flex wl_align_center wl_justify_between">
+                    <p class="loan-now-content-datasl text-overflow">{:lang('lend.lend_account')}</p>
+                    <p class="loan-now-content-datasr text-overflow"><span>{:session('member.username')}</span></p>
+                </li>
+                <li class="loan-now-content-datas wl_flex wl_align_center wl_justify_between" style="margin-bottom: 0.1rem">
+                    <p class="loan-now-content-datasl text-overflow">{:lang('lend.lend_jk_xieyi')}</p>
+                    <a class="loan-now-content-datasr2 text-overflow" href="{:url('show/news',['id'=>31])}">{:lang('lend.lend_watch')}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="loan-now-content-check wl_flex wl_align_center">
+            <input type="checkbox" id="loancookie" name="loancookie" lay-skin="primary"><div class="layui-unselect layui-form-checkbox" lay-skin="primary"><i class="layui-icon layui-icon-ok"></i></div>
+            <div class="loan-now-content-checkr">
+                {:lang('lend.lend_agree1')}                    <a href="{:url('show/news',['id'=>31])}">{:lang('lend.lend_agree2')}</a>
+                <i class="iconfont icon-youbian"></i>
+            </div>
+        </div>
+
+        <div class="loan-now-content-submitbox">
+            <button class="layui-btn" onclick="return buy()">{:lang('lend.lend_tijiao')}</button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    //var lendTime = [{"title":"7\u5929","hasHref":false,"num":7,"hrefType":"_self","rightFont_imgClass":"icon-youbian"},{"title":"14\u5929","hasHref":false,"num":14,"hrefType":"_self","rightFont_imgClass":"icon-youbian"},{"title":"21\u5929","hasHref":false,"num":21,"hrefType":"_self","rightFont_imgClass":"icon-youbian"}];
+    
+    var lendTime = {:json_encode($lendTime)};
+    // 点击全部
+    $('#allbtn').on('click', function(){
+        var available = $('#available').attr("data-num");
+        //available = parseInt(available);
+        console.log(available);
+        $('#loan_num').val(available);
+        $('#loan_num2').text(available);
+        getEndMoney();
+    });
+
+    $('.loan-now-content-numinput').on('input', function(){
+        let num = $(this).val();
+        if(num == ''){
+            num = 0;
+        }
+        num = Number(num);
+        $('#loan_num2').text($(this).val());
+        let day = $('#loan_date2').attr('data-day');
+
+        let lendRate = $("#lendRate").html();
+
+        lendRate = Number(lendRate);
+
+        let EndMoney = num + (num * day * lendRate / 100) ;
+        console.log('EndMoney',EndMoney);
+        $("#loan_num3").html(EndMoney);
+    });
+
+</script>
+<script type="text/javascript" src="__STATIC__/index/js/jquery-2.1.4.min.js"></script>
+<script type="text/javascript" src="__STATIC__/index/js/bscroll.js"></script>
+<script type="text/javascript" src="__STATIC__/index/js/scrollmenu.js"></script>
+<script>
+    function showListbscroll(){
+        $("body").scrollmenu({
+            // type:'',
+            bscroll:true,
+            // animateIn:'bounceIn',
+            // animateOut:'bounceOut',
+            click:function(ret){
+                if(ret.hasHref){
+                    return
+                }else{
+                    //console.log(JSON.stringify(ret));
+                    console.log(ret);  //选择框选择的数据
+                    $('#loan_date').html(ret.title);
+                    $('#loan_date2').html(ret.title);
+                    $('#loan_date2').attr('data-day',ret.num);
+                    console.log('aaa');  //选择框选择的数据
+                    getEndMoney();
+                    //alert(JSON.stringify(ret));
+                }
+            }
+        });
+    }
+</script>
+<script>
+    $('body').on('click','.cpt-dw-mask',function(){
+        $('.cpt-dw-mask').remove();
+        $('#selectScrollMenu').remove();
+    })
+    function getEndMoney() {
+        let num = $("#loan_num").val();
+        if(num == ''){
+            num = 0;
+        }
+        num = Number(num);
+
+
+        let day = $('#loan_date2').attr('data-day');
+
+        let lendRate = $("#lendRate").html();
+        lendRate = Number(lendRate);
+
+        let EndMoney = num + (num * day * lendRate / 100) ;
+        console.log('EndMoney',EndMoney);
+        $("#loan_num3").html(EndMoney);
+        $('#selectScrollMenu').remove();
+        $('.cpt-dw-mask').remove();
+    }
+    layui.use('form', function(){
+        var form = layui.form;
+    });
+    function buy(){
+
+        let loan_num = $("#loan_num").val();
+        if(!loan_num){
+            //layer.msg('1111');
+            layer.msg('{:lang('lend.lend_jk_inputnumber')}');
+            return false;
+        }
+
+        let tipFlag = $("#loancookie").prop('checked');
+        if (tipFlag == false){
+            layer.msg('{:lang('lend.lend_agree_tip')}');
+            return false;
+        }
+        let day = $('#loan_date2').attr('data-day');
+        // data.field.days_num = day;
+        // console.log(data.field);
+        $.ajax({
+            type:"post",
+            url:"{:url('lend/addorder')}",
+            data: {'days_num':day,'amount':loan_num},
+            dataType:'JSON',
+            async:false,
+            beforeSend: function(){
+            },
+            success:function(res){
+                layer.msg(res.msg)
+                if(res.code == 1){
+                    setTimeout(function () {
+                        window.location.href = "{:url('lend/otc_loan_history')}";
+                    },1000)
+                }else{
+                    return false;
+                }
+            },
+            error:function(){
+                layer.msg("{:lang('lend.lend_neterror')}",{time:2*1000});
+            }
+        });
+
+        return false;
+    }
+
+
+</script>
+<!--footer-->
+{include file="./block/foot_script"}

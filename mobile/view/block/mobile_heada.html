@@ -1,0 +1,117 @@
+<!--
+ * @Author: Fox Blue
+ * @Date: 2021-08-17 17:54:58
+ * @LastEditTime: 2021-10-11 21:10:09
+ * @Description: Forward, no stop
+-->
+<div class="header">
+    <ul class="layui-nav">
+      <li class="layui-nav-item" id="userLeft"><img src="__STATIC__/mobile/imgn/topuser.png" ></li>
+      <li class="layui-nav-item float-right">
+        {include file="./block/mobile_lang"}
+      </li>
+      <li class="layui-nav-item float-right">{include file="./block/mobile_day"}</li>
+    </ul>
+</div>
+<div id="leftUser" class="hidebox left-user-box">
+  <div class="text-right">{include file="./block/mobile_day"}</div>
+  {if session('member')}
+  <div class="layui-row">
+    <div class="layui-col-xs12 text-center">
+      <a href="{:url('member/account')}">
+        <div class="user-box-center">
+          <div class="user-info">
+            <div class="avatar">
+            </div>
+            <div class="login-wrap">
+              <div class="title">{:session('member.username')}</div>
+              <div class="title" style="font-size:20px;">UID：1000{:session('member.id')}</div>
+              <div class="tips">{:lang('mobile_home.wellcome')}{:sysconfig('site','site_name')}</div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  {else}
+  <div class="layui-row">
+    <div class="layui-col-xs12 text-center">
+      <a href="{:url('wicket/login')}">
+        <div class="user-box-center">
+          <div class="user-info">
+            <div class="avatar">
+            </div>
+            <div class="login-wrap">
+              <div class="title">{:lang('mobile_home.userlogin')}</div>
+              <div class="tips">{:lang('mobile_home.wellcome')}{:sysconfig('site','site_name')}</div>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+  {/if}
+  <div class="layui-row mt-10 user-box-imgn">
+    <div class="layui-col-xs4 text-center">
+      <a class="link-b" href="{:url('dealings/recharge')}">
+        <img src="__STATIC__/mobile/imgn/user_recharge.png" >
+        <p>{:lang('mobile_home.user_recharge')}</p>
+      </a>
+    </div>
+    <div class="layui-col-xs4 text-center">
+      <a class="link-b" href="{:url('dealings/withdraw')}">
+        <img src="__STATIC__/mobile/imgn/user_withdraw.png" >
+        <p>{:lang('mobile_home.user_withdraw')}</p>
+      </a>
+    </div>
+    <!-- <div class="layui-col-xs4 text-center">
+      <a class="link-b" href="{:url('show/lists',['id'=>16])}">
+        <img src="__STATIC__/mobile/imgn/help_ico.png" >
+        <p>{:lang('mobile_home.user_help')}</p>
+      </a>
+    </div> -->
+    <div class="layui-col-xs4 text-center">
+      <a class="link-b" href="{:url('member/team')}">
+        <img src="__STATIC__/mobile/imgn/invite_ico.png" >
+        <p>{:lang('mobile_home.user_invite')}</p>    
+      </a>
+    </div>
+  </div>
+  <hr>
+  <div class="layui-row left-user-lists">
+    <li><a href="{:url('member/authset')}"><i class="layui-icon layui-icon-friends"></i>{:lang('public_memu.member_authset')}</a></li>
+    <li><a href="{:url('member/tradelog')}"><i class="layui-icon layui-icon-menu-fill"></i>{:lang('public_memu.member_tradelog')}</a></li>
+    <li><a href="{:url('member/team')}"><i class="layui-icon layui-icon-diamond"></i>{:lang('public_memu.member_team')}</a></li>
+    <li><a href="{:url('dealings/setaddress')}"><i class="layui-icon layui-icon-set-fill"></i>{:lang('public_memu.member_incomeset')}</a></li>
+    <li><a href="{:url('member/account')}"><i class="fa fa-user-circle-o"></i>{:lang('public_memu.member_account')}</a></li>
+    <li><a href="{:url('show/news',['id'=>12])}"><i class="fa fa-compass"></i>{:lang('public_memu.web_about')}</a></li>
+    {if sysconfig('member','turn_usdt')=='open'}
+    <li><a href="{:url('member/turnusdt')}"><i class="fa fa fa-transgender-alt"></i>{:lang('public_memu.member_turn_usdt')}</a></li>
+    {/if}
+    {if session('member')}
+    <li><a href="{:url('index/loginout')}"><i class="fa fa-sign-out" aria-hidden="true"></i>{:lang('public_memu.loginout')}</a></li>
+    {/if}
+  </div>
+  <hr>
+  <div class="layui-row left-user-list">
+    <li><a {if $topmenu=='winer'}class="layui-this"{/if} href="{:url('winer/index')}"><img src="__STATIC__/mobile/imgn/winer_ico.png" >{:lang('public_memu.winer')}</a></li>
+    <li><a {if $topmenu=='coinwin'}class="layui-this"{/if} href="{:url('coinwin/index')}"><img src="__STATIC__/mobile/imgn/coinwin_ico.png" >{:lang('public_memu.coinwin')}</a></li>
+    <li><a {if $topmenu=='ieorg'}class="layui-this"{/if} href="{:url('ieorg/index')}"><img src="__STATIC__/mobile/imgn/ieo_ico.png" >{:lang('public_memu.eiorg')}</a></li>
+    <li><a href="{:sysconfig('base', 'down_ipa_url')}"><img src="__STATIC__/common/images/icon-download-green.png" >{:lang('home_page.bannerd_down')}</a></li>
+  </div>
+  <!-- <div class="layui-row setbox">
+    <div class="layui-col-xs4">
+      <span  style="padding-left: 18px;">{:lang('mobile_home.theme_set')}</span>
+    </div>
+    <div class="layui-col-xs8">
+      <div class="testswitch">
+        <input class="testswitch-checkbox" id="onoffswitch" type="checkbox" {if $theme !== 'Dark'}checked{/if}>
+        <label class="testswitch-label" for="onoffswitch">
+            <span class="testswitch-inner" data-on="A" data-off="B"></span>
+            <span class="testswitch-switch"></span>
+        </label>
+      </div>
+    </div>
+  </div> -->
+</div>
+<div class="layui-clear"></div>

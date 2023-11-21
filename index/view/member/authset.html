@@ -1,0 +1,555 @@
+<div class="header">
+    {include file="./block/block_head"}
+</div>
+<div class="new-bg">
+    <!--主体-->
+    <div class="main">
+        <div class="layui-container">
+            <div class="layui-row layui-col-space30 white-box">
+                <div class="layui-col-xs3">
+                    {include file="./block/member_left"}
+                </div>
+                <div class="layui-col-xs9">
+                    {if $auth && $auth=='wno'}
+                    <div class="layui-bg-orange text-center line-36">{:lang('public_memu.member_authset_wno')}</div>
+                    {/if}
+                    <div class="set-form">
+                        <div class="auth-box">
+                            <div class="auth-box-item">
+                                <div class="auth-box-line-a color-blue">
+                                    {:lang('authset.step_1')}
+                                </div>
+                            </div>
+                            <div class="auth-box-item">
+                                <div class="auth-box-line"></div>
+                            </div>
+                            <div class="auth-box-item">
+                                <div class="auth-box-line-b">
+                                    <i class="fa fa-circle" aria-hidden="true"></i>
+                                </div>
+                                <div class="auth-box-line-b color-blue">
+                                    {:lang('authset.step_2')}
+                                </div>
+                            </div>
+                            <div class="auth-box-item">
+                                <div class="auth-box-line"></div>
+                            </div>
+                            <div class="auth-box-item">
+                                <div class="auth-box-line-b">
+                                    <i class="fa fa-circle" aria-hidden="true"></i>
+                                </div>
+                                <div class="auth-box-line-b color-blue">
+                                    {if $card.status !== 1}
+                                    {:lang('authset.step_3')}
+                                    {else}
+                                    {:lang('authset.step_4')}
+                                    {/if}
+                                </div>
+                            </div>
+                        </div>
+                        {if $card.status == 2}
+                        <form class="layui-form" action="">
+                            <div class="layui-form-item text-center" style="margin-bottom: 40px;">
+                                <p class="color">{:lang('authset.card_status_2')}</p>
+                                {if $card.remark}
+                                <p class="color-red">
+                                    {$card.remark|raw|nl2br|htmlspecialchars_decode|html_entity_decode}</p>
+                                {/if}
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:lang('authset.name')}：</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="name" lay-verify="required" lay-verType="tips"
+                                           lay-reqText="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.name'))}"
+                                           placeholder="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.name'))}"
+                                           autocomplete="off" class="layui-input" value="{$card.name|default=''}">
+                                </div>
+                            </div>
+                            <!--<div class="layui-form-item">-->
+                            <!--    <label class="layui-form-label">{:lang('authset.国家')}：</label>-->
+                            <!--    <div class="layui-input-block">-->
+                            <!--        <select name="countries" class="layui-input" lay-verify="required"-->
+                            <!--                lay-verType="tips" >-->
+                                        <!--                            <option selected="selected" disabled="disabled" value="">Select country</option>-->
+                                        
+                            <!--            <option value="Afghanistan">Afghanistan</option>-->
+                            <!--            <option value="Albania">Albania</option>-->
+                            <!--            <option value="Algeria">Algeria</option>-->
+                            <!--            <option value="Andorra">Andorra</option>-->
+                            <!--            <option value="Angola">Angola</option>-->
+                            <!--            <option value="Anguilla">Anguilla</option>-->
+                            <!--            <option value="Antigua and Barbuda">Antigua and Barbuda</option>-->
+                            <!--            <option value="Argentina">Argentina</option>-->
+                            <!--            <option value="Armenia">Armenia</option>-->
+                            <!--            <option value="Afghanistan">America</option>-->
+                            <!--            <option value="Ascension">Ascension</option>-->
+                            <!--            <option value="Australia">Australia</option>-->
+                            <!--            <option value="Austria">Austria</option>-->
+                            <!--            <option value="Azerbaijan">Azerbaijan</option>-->
+                            <!--            <option value="Bahamas">Bahamas</option>-->
+                            <!--            <option value="Bahrain">Bahrain</option>-->
+                            <!--            <option value="Bangladesh">Bangladesh</option>-->
+                            <!--            <option value="Barbados">Barbados</option>-->
+                            <!--            <option value="Belarus">Belarus</option>-->
+                            <!--            <option value="Belgium">Belgium</option>-->
+                            <!--            <option value="Belize">Belize</option>-->
+                            <!--            <option value="Benin">Benin</option>-->
+                            <!--            <option value="Bermuda Is.">Bermuda Is.</option>-->
+                            <!--            <option value="Bolivia">Bolivia</option>-->
+                            <!--            <option value="Botswana">Botswana</option>-->
+                            <!--            <option value="Brazil">Brazil</option>-->
+                            <!--            <option value="Brunei">Brunei</option>-->
+                            <!--            <option value="Bulgaria">Bulgaria</option>-->
+                            <!--            <option value="Burkina-faso">Burkina-faso</option>-->
+                            <!--            <option value="Burma">Burma</option>-->
+                            <!--            <option value="Burundi">Burundi</option>-->
+                            <!--            <option value="Cameroon">Cameroon</option>-->
+                            <!--            <option value="Canada">Canada</option>-->
+                            <!--            <option value="Cayman Is.">Cayman Is.</option>-->
+                            <!--            <option value="Central African Republic">Central African Republic</option>-->
+                            <!--            <option value="Chad">Chad</option>-->
+                            <!--            <option value="Chile">Chile</option>-->
+                            <!--            <option value="China">China</option>-->
+                            <!--            <option value="Colombia">Colombia</option>-->
+                            <!--            <option value="Congo">Congo</option>-->
+                            <!--            <option value="Cook Is.">Cook Is.</option>-->
+                            <!--            <option value="Costa Rica">Costa Rica</option>-->
+                            <!--            <option value="Croatia">Croatia</option>-->
+                            <!--            <option value="Cuba">Cuba</option>-->
+                            <!--            <option value="Cyprus">Cyprus</option>-->
+                            <!--            <option value="Czech Republic">Czech Republic</option>-->
+                            <!--            <option value="Denmark">Denmark</option>-->
+                            <!--            <option value="Djibouti">Djibouti</option>-->
+                            <!--            <option value="Dominica Rep.">Dominica Rep.</option>-->
+                            <!--            <option value="Ecuador">Ecuador</option>-->
+                            <!--            <option value="Egypt">Egypt</option>-->
+                            <!--            <option value="EI Salvador">EI Salvador</option>-->
+                            <!--            <option value="Estonia">Estonia</option>-->
+                            <!--            <option value="Ethiopia">Ethiopia</option>-->
+                            <!--            <option value="Fiji">Fiji</option>-->
+                            <!--            <option value="Finland">Finland</option>-->
+                            <!--            <option value="France">France</option>-->
+                            <!--            <option value="French Guiana">French Guiana</option>-->
+                            <!--            <option value="French Polynesia">French Polynesia</option>-->
+                            <!--            <option value="Gabon">Gabon</option>-->
+                            <!--            <option value="Gambia">Gambia</option>-->
+                            <!--            <option value="Georgia">Georgia</option>-->
+                            <!--            <option value="Germany">Germany</option>-->
+                            <!--            <option value="Ghana">Ghana</option>-->
+                            <!--            <option value="Gibraltar">Gibraltar</option>-->
+                            <!--            <option value="Greece">Greece</option>-->
+                            <!--            <option value="Grenada">Grenada</option>-->
+                            <!--            <option value="Guam">Guam</option>-->
+                            <!--            <option value="Guatemala">Guatemala</option>-->
+                            <!--            <option value="Guinea">Guinea</option>-->
+                            <!--            <option value="Guyana">Guyana</option>-->
+                            <!--            <option value="Haiti">Haiti</option>-->
+                            <!--            <option value="Honduras">Honduras</option>-->
+                            <!--            <option value="Hongkong">Hongkong</option>-->
+                            <!--            <option value="Hungary">Hungary</option>-->
+                            <!--            <option value="Iceland">Iceland</option>-->
+                            <!--            <option value="India">India</option>-->
+                            <!--            <option value="Indonesia">Indonesia</option>-->
+                            <!--            <option value="Iran">Iran</option>-->
+                            <!--            <option value="Iraq">Iraq</option>-->
+                            <!--            <option value="Ireland">Ireland</option>-->
+                            <!--            <option value="Israel">Israel</option>-->
+                            <!--            <option value="Italy">Italy</option>-->
+                            <!--            <option value="Ivory Coast">Ivory Coast</option>-->
+                            <!--            <option value="Jamaica">Jamaica</option>-->
+                            <!--            <option value="Japan">Japan</option>-->
+                            <!--            <option value="Jordan">Jordan</option>-->
+                            <!--            <option value="Kampuchea (Cambodia)">Kampuchea (Cambodia)</option>-->
+                            <!--        </select>-->
+                            <!--    </div>-->
+                            <!--</div>-->
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:lang('authset.证件类型')}：</label>
+                                <div class="layui-input-block">
+                                    <?php $types=[1=>lang('authset.身份证'),1=>lang('authset.护照'),1=>lang('authset.驾驶证')];
+                                    ?>
+                                    <select name="card_type" class="layui-input" lay-verify="required"
+                                            lay-verType="tips" >
+                                        <option value="1" {if $card.card_type == 1}checked{/if}>{:lang('authset.身份证')}</option>
+                                        <option value="2" {if $card.card_type == 2}checked{/if}>{:lang('authset.护照')}</option>
+                                        <option value="3" {if $card.card_type == 3}checked{/if}>{:lang('authset.驾驶证')}</option>
+                                        <!--                                        $card.countries-->
+                                    </select>
+<!--                                    <input type="text" name="card_type" lay-verify="required" lay-verType="tips"-->
+<!--                                           lay-reqText="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.证件类型'))}"-->
+<!--                                           placeholder="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.证件类型'))}"-->
+<!--                                           autocomplete="off" class="layui-input" value="{$card.card_type|default=''}">-->
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:lang('authset.card')}：</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="card" lay-verify="required" lay-verType="tips"
+                                           lay-reqText="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.card'))}"
+                                           placeholder="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.card'))}"
+                                           autocomplete="off" class="layui-input" value="{$card.card|default=''}">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:lang('authset.住址')}：</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="address" lay-verify="required" lay-verType="tips"
+                                           lay-reqText="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.住址'))}"
+                                           placeholder="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.住址'))}"
+                                           autocomplete="off" class="layui-input" value="{$card.address|default=''}">
+                                </div>
+                            </div>
+                            <div class="set-code" style="">
+                                <p>{:lang('authset.content')}</p>
+                                <div class="layui-inline " id="card_a_btn">
+                                    <img src="__STATIC__/index/img/sf_zm.png">
+                                    <input type="hidden" id="card_a" name="card_a" value="">
+                                </div>
+                                <div class="layui-inline" id="card_b_btn">
+                                    <img src="__STATIC__/index/img/sf_fm.png">
+                                    <input type="hidden" id="card_b" name="card_b" value="">
+                                </div>
+                                <!--<div class="layui-inline" id="card_c_btn">-->
+                                <!--    <img src="__STATIC__/index/img/sf_sc.png">-->
+                                <!--    <input type="hidden" id="card_c" name="card_c" value="">-->
+                                <!--</div>-->
+                            </div>
+                            <div class="layui-form-item set-btn">
+                                <button class="layui-btn layui-btn-normal layui-btn-lg" lay-submit lay-filter="setCard">
+                                    {:lang('authset.form_btn_re')}
+                                </button>
+                            </div>
+                        </form>
+                        {elseif $card.status == 0}
+                        <form class="layui-form" action="">
+                            {if $card.card_a && $card.card_b && $card.card_c}
+                            <div class="layui-form-item text-center">
+                                <p class="color">{:lang('authset.card_status_0')}</p>
+                            </div>
+                            {else}
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:lang('authset.name')}：</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="name" lay-verify="required" lay-verType="tips"
+                                           lay-reqText="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.name'))}"
+                                           placeholder="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.name'))}"
+                                           autocomplete="off" class="layui-input" value="{$card.name|default=''}">
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:lang('authset.国家')}222：</label>
+                                <div class="layui-input-block">
+                                    <select name="countries" class="layui-input" lay-verify="required"
+                                            lay-verType="tips" >
+                                        <!--                            <option selected="selected" disabled="disabled" value="">Select country</option>-->
+                                        <option value="Afghanistan">Afghanistan</option>
+                                        <option value="Albania">Albania</option>
+                                        <option value="Algeria">Algeria</option>
+                                        <option value="Andorra">Andorra</option>
+                                        <option value="Angola">Angola</option>
+                                        <option value="Anguilla">Anguilla</option>
+                                        <option value="Antigua and Barbuda">Antigua and Barbuda</option>
+                                        <option value="Argentina">Argentina</option>
+                                        <option value="Armenia">Armenia</option>
+                                        <option value="Afghanistan">America</option>
+                                        <option value="Ascension">Ascension</option>
+                                        <option value="Australia">Australia</option>
+                                        <option value="Austria">Austria</option>
+                                        <option value="Azerbaijan">Azerbaijan</option>
+                                        <option value="Bahamas">Bahamas</option>
+                                        <option value="Bahrain">Bahrain</option>
+                                        <option value="Bangladesh">Bangladesh</option>
+                                        <option value="Barbados">Barbados</option>
+                                        <option value="Belarus">Belarus</option>
+                                        <option value="Belgium">Belgium</option>
+                                        <option value="Belize">Belize</option>
+                                        <option value="Benin">Benin</option>
+                                        <option value="Bermuda Is.">Bermuda Is.</option>
+                                        <option value="Bolivia">Bolivia</option>
+                                        <option value="Botswana">Botswana</option>
+                                        <option value="Brazil">Brazil</option>
+                                        <option value="Brunei">Brunei</option>
+                                        <option value="Bulgaria">Bulgaria</option>
+                                        <option value="Burkina-faso">Burkina-faso</option>
+                                        <option value="Burma">Burma</option>
+                                        <option value="Burundi">Burundi</option>
+                                        <option value="Cameroon">Cameroon</option>
+                                        <option value="Canada">Canada</option>
+                                        <option value="Cayman Is.">Cayman Is.</option>
+                                        <option value="Central African Republic">Central African Republic</option>
+                                        <option value="Chad">Chad</option>
+                                        <option value="Chile">Chile</option>
+                                        <option value="China">China</option>
+                                        <option value="Colombia">Colombia</option>
+                                        <option value="Congo">Congo</option>
+                                        <option value="Cook Is.">Cook Is.</option>
+                                        <option value="Costa Rica">Costa Rica</option>
+                                        <option value="Croatia">Croatia</option>
+                                        <option value="Cuba">Cuba</option>
+                                        <option value="Cyprus">Cyprus</option>
+                                        <option value="Czech Republic">Czech Republic</option>
+                                        <option value="Denmark">Denmark</option>
+                                        <option value="Djibouti">Djibouti</option>
+                                        <option value="Dominica Rep.">Dominica Rep.</option>
+                                        <option value="Ecuador">Ecuador</option>
+                                        <option value="Egypt">Egypt</option>
+                                        <option value="EI Salvador">EI Salvador</option>
+                                        <option value="Estonia">Estonia</option>
+                                        <option value="Ethiopia">Ethiopia</option>
+                                        <option value="Fiji">Fiji</option>
+                                        <option value="Finland">Finland</option>
+                                        <option value="France">France</option>
+                                        <option value="French Guiana">French Guiana</option>
+                                        <option value="French Polynesia">French Polynesia</option>
+                                        <option value="Gabon">Gabon</option>
+                                        <option value="Gambia">Gambia</option>
+                                        <option value="Georgia">Georgia</option>
+                                        <option value="Germany">Germany</option>
+                                        <option value="Ghana">Ghana</option>
+                                        <option value="Gibraltar">Gibraltar</option>
+                                        <option value="Greece">Greece</option>
+                                        <option value="Grenada">Grenada</option>
+                                        <option value="Guam">Guam</option>
+                                        <option value="Guatemala">Guatemala</option>
+                                        <option value="Guinea">Guinea</option>
+                                        <option value="Guyana">Guyana</option>
+                                        <option value="Haiti">Haiti</option>
+                                        <option value="Honduras">Honduras</option>
+                                        <option value="Hongkong">Hongkong</option>
+                                        <option value="Hungary">Hungary</option>
+                                        <option value="Iceland">Iceland</option>
+                                        <option value="India">India</option>
+                                        <option value="Indonesia">Indonesia</option>
+                                        <option value="Iran">Iran</option>
+                                        <option value="Iraq">Iraq</option>
+                                        <option value="Ireland">Ireland</option>
+                                        <option value="Israel">Israel</option>
+                                        <option value="Italy">Italy</option>
+                                        <option value="Ivory Coast">Ivory Coast</option>
+                                        <option value="Jamaica">Jamaica</option>
+                                        <option value="Japan">Japan</option>
+                                        <option value="Jordan">Jordan</option>
+                                        <option value="Kampuchea (Cambodia)">Kampuchea (Cambodia)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:lang('authset.证件类型')}：</label>
+                                <div class="layui-input-block">
+
+                                    <select name="card_type" class="layui-input" lay-verify="required"
+                                            lay-verType="tips" id="">
+                                        <option value="1">{:lang('authset.身份证')}</option>
+                                        <option value="2">{:lang('authset.护照')}</option>
+                                        <option value="3">{:lang('authset.驾驶证')}</option>
+                                    </select>
+<!--                                    <input type="text" name="card_type" lay-verify="required" lay-verType="tips"-->
+<!--                                           lay-reqText="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.证件类型'))}"-->
+<!--                                           placeholder="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.证件类型'))}"-->
+<!--                                           autocomplete="off" class="layui-input" value="{$card.card_type|default=''}">-->
+
+                                </div>
+                            </div>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:lang('authset.card')}：</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="card" lay-verify="required" lay-verType="tips"
+                                           lay-reqText="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.card'))}"
+                                           placeholder="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.card'))}"
+                                           autocomplete="off" class="layui-input" value="{$card.card|default=''}">
+                                </div>
+                            </div>
+
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">{:lang('authset.住址')}：</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="address" lay-verify="required" lay-verType="tips"
+                                           lay-reqText="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.住址'))}"
+                                           placeholder="{:fox_all_replace(lang('wicket_page.please_input'),lang('authset.住址'))}"
+                                           autocomplete="off" class="layui-input" value="{$card.address|default=''}">
+                                </div>
+                            </div>
+                            <div  class="set-code" style="">
+                                <p>{:lang('authset.content')}</p>
+                                {if $card.status == 2 && $card.remark}
+                                <p class="color-red">
+                                    {$card.remark|raw|nl2br|htmlspecialchars_decode|html_entity_decode}</p>
+                                {/if}
+                                <div class="layui-inline " id="card_a_btn">
+                                    {if $card.card_a}<img src="{$card.card_a}" width="128" height="128">{else}<img
+                                        src="__STATIC__/index/img/sf_zm.png">{/if}
+                                    <input type="hidden" id="card_a" name="card_a" value="">
+                                </div>
+                                <div class="layui-inline" id="card_b_btn">
+                                    {if $card.card_b}<img src="{$card.card_b}" width="128" height="128">{else}<img
+                                        src="__STATIC__/index/img/sf_fm.png">{/if}
+                                    <input type="hidden" id="card_b" name="card_b" value="">
+                                </div>
+                                <!--<div class="layui-inline" id="card_c_btn">-->
+                                <!--    {if $card.card_c}<img src="{$card.card_c}" width="128" height="128">{else}<img-->
+                                <!--        src="__STATIC__/index/img/sf_sc.png">{/if}-->
+                                <!--    <input type="hidden" id="card_c" name="card_c" value="">-->
+                                <!--</div>-->
+                            </div>
+                            <div class="layui-form-item set-btn">
+                                <button class="layui-btn layui-btn-normal layui-btn-lg" lay-submit lay-filter="setCard">
+                                    {:lang('authset.form_btn')}
+                                </button>
+                            </div>
+                            {/if}
+                        </form>
+                        {elseif $card.status == 1}
+                        <div class="layui-form">
+                            <div class="layui-form-item text-center">
+                                <p class="color">{:lang('authset.card_status_1')}</p>
+                            </div>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--footer-->
+{include file="./block/block_bottom"}
+{include file="./block/foot_script"}
+
+<script>
+    layui.use(['layer', 'jquery', 'form', 'upload'], function () {
+        var layer = layui.layer
+            , $ = layui.jquery
+            , form = layui.form;
+        var upload = layui.upload;
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        upload.render({
+            elem: '#card_a_btn'
+            , url: "{:url('member/upload_card')}"
+            , exts: 'jpg|png|jpeg',
+            before: function (obj) {
+                obj.preview(function (index, file, result) {
+                    $('#card_a_btn').find('img').attr('src', result);
+                    $('#card_a_btn').find('img').css({'width': '128px', 'height': '128px'});
+                });
+            },
+            done: function (res) {
+                if (res.code !== 0) {
+                    return layer.msg(res.msg);
+                }
+                //上传成功
+                if (res.data.url) {
+                    $('#card_a').val(res.data.src);
+                    layer.msg(res.msg);
+                }
+            }
+        });
+
+        upload.render({
+            elem: '#card_b_btn'
+            , url: "{:url('member/upload_card')}"
+            , exts: 'jpg|png|jpeg',
+            before: function (obj) {
+                obj.preview(function (index, file, result) {
+                    $('#card_b_btn').find('img').attr('src', result);
+                    $('#card_b_btn').find('img').css({'width': '128px', 'height': '128px'});
+                });
+            },
+            done: function (res) {
+                if (res.code !== 0) {
+                    return layer.msg(res.msg);
+                }
+                //上传成功
+                if (res.data.url) {
+                    $('#card_b').val(res.data.src);
+                    layer.msg(res.msg);
+                }
+            }
+        });
+
+        upload.render({
+            elem: '#card_c_btn'
+            , url: "{:url('member/upload_card')}"
+            , exts: 'jpg|png|jpeg',
+            before: function (obj) {
+                obj.preview(function (index, file, result) {
+                    $('#card_c_btn').find('img').attr('src', result);
+                    $('#card_c_btn').find('img').css({'width': '128px', 'height': '128px'});
+                });
+            },
+            done: function (res) {
+                if (res.code !== 0) {
+                    return layer.msg(res.msg);
+                }
+                //上传成功
+                if (res.data.url) {
+                    $('#card_c').val(res.data.src);
+                    layer.msg(res.msg);
+                }
+            }
+        });
+
+        form.on('submit(setCard)', function (data) {
+            // if (!data.field.card_a) {
+            //     $('#card_a_btn').find('img').css({'border': '1px solid #ff6600'});
+            //     layer.msg("{:lang('authset.please_upload')}", {time: 1000});
+            //     return false;
+            // } else {
+            //     $('#card_a_btn').find('img').css({'border': '1px solid #e2e2e2'});
+            // }
+            // if (!data.field.card_b) {
+            //     $('#card_b_btn').find('img').css({'border': '1px solid #ff6600'});
+            //     layer.msg("{:lang('authset.please_upload')}", {time: 1000});
+            //     return false;
+            // } else {
+            //     $('#card_a_btn').find('img').css({'border': '1px solid #e2e2e2'});
+            // }
+            // if (!data.field.card_c) {
+            //     $('#card_c_btn').find('img').css({'border': '1px solid #ff6600'});
+            //     layer.msg("{:lang('authset.please_upload')}", {time: 1000});
+            //     return false;
+            // } else {
+            //     $('#card_c_btn').find('img').css({'border': '1px solid #e2e2e2'});
+            // }
+            if (data.field.name && data.field.card) {
+                loading = layer.load(1, {shade: [0.1, '#fff']});
+                $.post("", data.field, function (res) {
+                    layer.close(loading);
+                    if (res.code > 0) {
+                        layer.msg(res.msg, {time: 1800}, function () {
+                            location.href = res.url;
+                        });
+                    } else {
+                        if (res.url) {
+                            layer.msg(res.msg, {time: 1800}, function () {
+                                location.href = res.url;
+                            });
+                        } else {
+                            layer.msg(res.msg, {time: 1800});
+                        }
+                    }
+                });
+            }
+            return false;
+        })
+        $(".showthis").click(function () {
+            var img = $(this).find('img').attr('src');
+            var div = '<div><img src="' + img + '" width="100%" height="100%"></div>';
+            var index = layer.open({
+                type: 1,
+                title: false,
+                area: ['90%', '90%'],
+                skin: 'layui-layer-rim',
+                content: div,
+            });
+            // layer.full(index);
+        })
+    })
+</script>

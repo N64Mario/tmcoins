@@ -1,0 +1,190 @@
+
+	<!-- header -->
+	<div class="header index-header">
+		{include file="./block/block_head"}
+		
+		<div class="slogan">
+			<h1>{:lang('home_page.bannera')}</h1>
+			<h5>{:lang('home_page.bannerb')}</h5>
+		</div>
+		<!--<div class="post-box">
+			<form class="layui-form" action="">
+				 <div class="layui-form-item">
+				    <label class="layui-form-label">{:lang('home_page.register_con')}</label>
+				    <div class="layui-input-inline">
+					  <input type="hidden" name="register_url" value="{:url('wicket/register')}">
+					  {if sysconfig('base','member_register') == 'all'}
+				      <input type="text" name="reg" lay-verify="username" placeholder="{:lang('home_page.register_all')}" autocomplete="off" class="layui-input">
+					  {elseif sysconfig('base','member_register') == 'email'}
+				      <input type="text" name="reg" lay-verify="username" placeholder="{:lang('home_page.register_email')}" autocomplete="off" class="layui-input">
+					  {elseif sysconfig('base','member_register') == 'phone'}
+				      <input type="text" name="reg" lay-verify="username" placeholder="{:lang('home_page.register_phone')}" autocomplete="off" class="layui-input">
+					  {/if}
+				    </div>
+				    <div class="layui-form-mid"><button class="layui-btn layui-btn-normal" lay-submit lay-filter="checkRegister">{:lang('public_memu.register')}</button></div>
+				  </div>
+			</form>
+		</div>
+	</div>
+	 行情 -->
+	<div class="layui-container">
+		<div class="new-table">
+			<table class="layui-table" lay-skin="nob" lay-size="lg">
+				<thead>
+					<tr>
+						<th>{:lang('home_page.coin_title')}</th>
+						<th>{:lang('home_page.coin_price')}</th>
+						<th>{:lang('home_page.coin_updown')}</th>
+						<th class="text-center">{:lang('home_page.coin_market')}</th>
+						<th>{:lang('home_page.coin_deal')}</th>
+					</tr> 
+				</thead>
+				<tbody>
+					{volist name="product" id="vo"}
+					<tr>
+						<td>
+							<img src="{$vo.logo}" width="24" height="24">
+							<span>{$vo.title}</span>
+							<span class="color-grey">{$vo.titles}</span>
+						</td>
+						<td style="min-width: 120px;"><span id="price_{$vo.code}">{$vo.last_price|floatVal}</span></td>
+						<td><span id="change_{$vo.code}" {if $vo.change>0}class="color-green"{else}class="color-red"{/if}>{$vo.change|floatVal|fox_nums}%</span></td>
+						<td class="text-center"><svg class="svg" id="svg_{$vo.code}" width="120" height="40" xmlns="http://www.w3.org/2000/svg"></svg></td>
+						<td><a class="layui-btn layui-btn-primary layui-border-blue" onclick='go_kline("{$vo.code}");'>{:lang('home_page.coin_deal')}</a></td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+			<div class="more">
+				<a href="{:url('market/index')}">{:lang('home_page.coin_more')}<i class="layui-icon layui-icon-right"></i></a>
+			</div>
+		</div>
+	</div>
+	<!--服务-->
+	<div class="layui-container">
+		<div class="serve">
+			<h2>{:lang('home_page.bannerc')}</h2>
+			<div class="layui-row layui-col-space30 serve-body">
+				<div class="layui-col-xs4 layui-anim-upbit">
+					<img src="__STATIC__/index/img/serve_01.png">
+					<h5>{:lang('home_page.bannerc_atitle')}</h5>
+					<p>{:lang('home_page.bannerc_acon')}</p>
+				</div>
+				<div class="layui-col-xs4 layui-anim-upbit">
+					<img src="__STATIC__/index/img/serve_02.png">
+					<h5>{:lang('home_page.bannerc_btitle')}</h5>
+					<p>{:lang('home_page.bannerc_bcon')}</p>
+				</div>
+				<div class="layui-col-xs4 layui-anim-upbit">
+					<img src="__STATIC__/index/img/serve_03.png">
+					<h5>{:lang('home_page.bannerc_ctitle')}</h5>
+					<p>{:lang('home_page.bannerc_ccon')}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--下载-->
+	<div class="down">
+		<h2>{:lang('home_page.bannerd')}</h2>
+		<h5>{:lang('home_page.bannerd_con')}</h5>
+		<div class="down-body layui-container">
+			<div class="layui-row">
+				<div class="layui-col-xs6 down_left">
+					<img src="__STATIC__/index/img/down_left.png" >
+				</div>
+				<div class="layui-col-xs6 down_right">
+					<p>
+						<a class="layui-btn layui-btn-radius">
+							<img src="__STATIC__/index/img/down_iphone.png"><b>{:lang('home_page.bannerd_ipa')}</b>
+							<span class="app-iphone"><img src="{$down_ipa}" width="150" ></span>
+						</a>
+					</p>
+					<p>
+						<a class="layui-btn layui-btn-radius">
+							<img src="__STATIC__/index/img/down_android.png"><b>{:lang('home_page.bannerd_apk')}</b>
+							<span class="app-android"><img src="{$down_apk}" width="150" ></span>
+						</a>
+					</p>		
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--footer-->
+	{include file="./block/block_bottom"}
+	{include file="./block/foot_script"}
+	<script src="__STATIC__/index/js/index/d3.v4.min.js?v={$version}"></script>
+	<script src="__STATIC__/index/js/index/index.js?v={$version}"></script>
+	<script>var page_out="home";</script>
+	<script src="__STATIC__/index/js/websocket.js?v={$version}"></script>
+	<script>
+		$(function(){
+			socket.sendData({
+				type: 'kline',
+				find: 'home',
+			},null,null)
+			setInterval(() => {
+				sufing()
+			}, 3000);
+		})
+		function go_kline(a){
+			storage.setItem("tobol",a);
+			location.href="{:url('deal/index')}";
+		}
+function sufing() {
+	let td = $('.new-table tbody tr').find('td:nth-child(2) span')
+	let tds = $('.new-table tbody tr').find('td:nth-child(3) span')
+	let len = td.length
+	for (let i = 0; i < len; i++) {
+		let zf = 1
+		let fw = Math.ceil(Math.random()*5*zf)/1000
+		let f1 = $(tds).eq(i).text()
+		let f2 = $(td).eq(i).text()*1
+		f1=f1.replace('%','')*1
+		let fic = parseFloat((f2*fw).toFixed(2))
+		let fic1 = parseFloat(fw.toFixed(2))
+		fic = dealNum(f2,fic)
+		fic1 = dealNum(f1,fic1)
+		console.log(fic,fic1);
+		$(tds).eq(i).html(`${fic1>0?'+':''}${fic1}%`)
+		$(td).eq(i).html(fic)
+	}
+
+}
+function dealNum(f1,f2){
+	let f1str=f1.toString()
+	let point = f1str.indexOf('.')
+	let leng =f1str.length 
+	console.log('-------',f1,f2,f1str,point);
+	if(point>0){
+		let len = leng - 1-point
+		let num = (f1+f2).toFixed(len)
+		console.log(num);
+		return num
+	}
+	return f1+f2
+}
+function accAdd(arg1,arg2){
+var r1,r2,m;
+try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}
+try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}
+m=Math.pow(10,Math.max(r1,r2));
+return (arg1*m+arg2*m)/m;
+}
+function AddCalculation(...num) {
+	let decimalLength = 0; // 最多小数后几位
+    for(let i = 0; i < num.length; i++){
+      const tempNum = num[i]; // 每个参数
+      if(tempNum.toString().split('.').length > 1){ // 判断是否是小数，如果是小数的话，则获取到最长的小数位
+        const length = tempNum.toString().split('.')[1].length;
+        decimalLength = Math.max(decimalLength, length);
+      }
+    }
+    let result = 0;
+    for(let i = 0; i < num.length; i++){
+      const n = num[i] * Math.pow(10, decimalLength);
+      const tempResult = result * Math.pow(10, decimalLength);
+      result = (n + tempResult) / Math.pow(10, decimalLength);
+    }
+    return result;
+}
+	</script>

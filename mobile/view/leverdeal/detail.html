@@ -1,0 +1,114 @@
+<!--
+ * @Author: Fox Blue
+ * @Date: 2021-08-05 14:49:53
+ * @LastEditTime: 2021-10-13 10:24:46
+ * @Description: Forward, no stop
+-->
+<div class="a-header position-re">
+	<a href="javascript:window.history.go(-1);"><i class="layui-icon layui-icon-left"></i></a>
+	<div class="layui-inline h-span">订单详情</div>
+</div>
+<style>
+	.set-form .layui-input-block{
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+		padding-right: 10px;
+	}
+</style>
+<div class="new-bg">
+	<div class="main-no">
+		<div class="layui-container">
+			<div class="white-box mt-20">
+				<div class="transfer-box">
+					<h5>
+						<div style="display:flex;justify-content: center">盈亏金额</div>
+                        <div style="display:flex;justify-content: center;padding:10px 0;font-size: 18px;font-weight: bolder;color:{if($info.price_change>0)}green{else/}red{/if}">
+							{:round($info.price_change,4)}&nbsp;({:round($info.price_change/$info.bzj_price*100,2)}%)
+						</div>
+					</h5>
+					<hr >
+					<div class="set-form">
+						<form class="layui-form" action="" lay-filter="test2">
+						  <div class="layui-form-item">
+								<label class="layui-form-label">操作</label>
+								<div class="layui-input-block">
+									{$product.titles}
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">状态</label>
+								<div class="layui-input-block">
+									{:$info.status==1?'持仓中':'已平仓'}
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">开仓金额</label>
+								<div class="layui-input-block">
+									{:round($info.buy_price*$info.account,4)}
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">可平金额</label>
+								<div class="layui-input-block">
+									{:$info.status==1?round($product.close*$info.account,4):0}
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">保证金</label>
+								<div class="layui-input-block">
+									<!--
+									{:$info.bzj_price}
+									-->
+									0
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">手续费</label>
+								<div class="layui-input-block">
+									{$info.shouxufei}
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">建仓成本</label>
+								<div class="layui-input-block">
+									{$info.buy_price}
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">平仓价格</label>
+								<div class="layui-input-block">
+									{$info.status==1?$product.close:$info.close_price}
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">开仓时间</label>
+								<div class="layui-input-block">
+									{$info.create_time}
+								</div>
+							</div>
+							<div class="layui-form-item">
+								<label class="layui-form-label">平仓时间</label>
+								<div class="layui-input-block">
+									{:$info.status==2?$info.update_time:"-"}
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!--footer-->
+{include file="./block/foot_script"}
+<script>
+	layui.use(['layer','element','jquery', 'form', 'flow'], function(){
+		var layer = layui.layer
+		,element = layui.element
+		,$ = layui.jquery
+		,form = layui.form
+		var flow = layui.flow;
+
+	})
+</script>

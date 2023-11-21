@@ -1,0 +1,69 @@
+<!--
+ * @Author: Fox Blue
+ * @Date: 2021-08-17 15:53:49
+ * @LastEditTime: 2021-09-02 00:04:51
+ * @Description: Forward, no stop
+-->
+<link rel="stylesheet" href="__STATIC__/mobile/css/defi.css" media="all">
+<link rel="stylesheet" href="__STATIC__/iconfont/iconfont.css" media="all">
+<div class="a-header position-re layui-rows">
+    <div class="layui-col-xs4">
+        <a href="javascript:window.history.go(-1);"><i class="layui-icon layui-icon-left"></i></a>
+    </div>
+	<div class="layui-col-xs4 text-center">
+		總計額度
+	</div>
+	<div class="layui-col-xs4 text-right">
+        <a href="{:url('/mobile')}"><i class="layui-icon layui-icon-home"></i></a>
+    </div>
+</div>
+
+
+<div class="loan-bill-content">
+    <div class="loan-bill-box" style="border-radius: 0.06rem">
+        <ul class="loan-bill-nav">
+            <li class="loan-bill-boxs2 wl_flex wl_align_center wl_justify_between" style="margin-bottom: 0.15rem">
+                <div class="loan-bill-boxs2l-new">
+                    <p class="loan-bill-boxs2l-top text-overflow">總計額度（USDT）</p>
+                    <p class="loan-bill-boxs2l-bom text-overflow" data-num="5000">7162136.45</p>
+                </div>
+                <div class="loan-bill-boxs2r">
+                    <a class="loan-bill-boxs2r-link" href="/index.php/index/lend/otc_loan_now.html">
+                        <div class="loan-bill-btn text-overflow">去借款</div>
+                    </a>
+                </div>
+            </li>
+            <li class="loan-amount-box wl_flex wl_align_center">
+                <div class="loan-amount-boxs">
+                    <p class="loan-amount-boxs-top text-overflow">可用額度（USDT）</p>
+                    <p class="loan-amount-boxs-bom text-overflow">7162136.446352</p>
+                </div>
+                <div class="loan-amount-boxs">
+                    <p class="loan-amount-boxs-top text-overflow">可用額度（USDT）</p>
+                    <p class="loan-amount-boxs-bom text-overflow">0</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!-- End -->
+
+    <!-- 记录入口 -->
+    <div class="loan-bill-content-precautions">
+        <a class="loan-bill-content-precautionslink" href="/index.php/index/lend/otc_loan_history.html">
+            <div class="loan-bill-content-precautions-nav wl_flex wl_align_center wl_justify_between">
+                <span>查看借款歷史記錄</span>
+                <i class="iconfont icon-youbian"></i>
+            </div>
+        </a>
+    </div>
+
+    <div class="loan-amount-servelinks wl_flex wl_align_center wl_justify-content">
+        <div class="wl_flex wl_align_center">
+            <a href="/index.php/index/index/help_center.html">幫助中心</a>
+            <a href="/index.php/index/user/online_service.html">諮詢客服</a>
+        </div>
+    </div>
+</div>
+
+<!--footer-->
+{include file="./block/foot_script"}

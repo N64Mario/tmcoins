@@ -1,0 +1,2194 @@
+<script src="__STATIC__/mobile/trading/pako.js?v={$version}"></script>
+
+<script src="__STATIC__/mobile/trading/event.js?v={$version}"></script>
+
+<script src="__STATIC__/mobile/trading/charting_library/charting_library.min.js?v={$version}"></script>
+
+<link rel="stylesheet" type="text/css" href="__STATIC__/mobile/lib/tablesort/tablesorter.css?v={$version}" />
+
+<link rel="stylesheet" href="__STATIC__/mobile/trading/trading.css?v={$version}">
+
+<script>
+    var page_out = "leverdeal",
+
+        lang_kline = "{:lang('kline_list.lang')}";
+
+    symbol_first = "{:sysconfig('api','leverdeal_first')}";
+
+    var Webtheme = "{$theme}";
+
+    var Productone = "{:url('ajax/get_product')}";
+
+    var depth_bid = "{:lang('deal.depth_bid')}";
+
+    var depth_ask = "{:lang('deal.depth_ask')}";
+
+    var uid = "{:session('member.id')}";
+</script>
+
+<script src="__STATIC__/mobile/js/websocket.js?v={$version}"></script>
+
+<script src="__STATIC__/mobile/trading/datafeed.js?v={$version}"></script>
+
+<script src="__STATIC__/mobile/trading/chartConfig.js?v={$version}"></script>
+
+
+<style>
+    .lay_form_box {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+    }
+    
+    .lay_form_box .label {
+        width: 20%;
+    }
+    
+    .lay_form_box .c_input {
+        flex: 1;
+    }
+    
+    .lay_form_box .c_input input {
+        width: 80%;
+    }
+    
+    .full_box_view {
+        background-color: rgba(0, 0, 0, .5);
+        width: 100vw;
+        height: 100vh;
+        position: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+    
+    .full_box_view.none {
+        display: none;
+    }
+    
+    .full_box_view .pop_box {
+        background-color: #1C273D;
+        border-radius: 10px;
+        width: 90%;
+    }
+    
+    .full_box_view .pop_box .box_content {
+        padding: 3% 8%;
+    }
+    
+    .full_box_view .pop_box .c_title {
+        text-align: center;
+        font-size: 20px;
+        color: #fff;
+        padding: 10px 0 15px;
+    }
+    
+    .full_box_view .hang_sr {
+        display: flex;
+    }
+    
+    .full_box_view .label_c {
+        width: 26%;
+    }
+    
+    .full_box_view .input_box {
+        flex: 1;
+        display: inline-flex;
+    }
+    
+    .full_box_view .input_box .jian {
+        background-color: #fff;
+        display: inline-flex;
+        justify-content: center;
+        align-items: baseline;
+        padding: 0 15px;
+        font-size: 18px;
+        font-weight: bold;
+    }
+    
+    .full_box_view .input_box .jian1 {
+        border-radius: 6px 0 0 6px;
+        margin-right: 6px;
+    }
+    
+    .full_box_view .input_box .jian2 {
+        border-radius: 0 6px 6px 0;
+        margin-left: 6px;
+    }
+    
+    .full_box_view .input_zhiying,
+    .input_zhisun {
+        text-align: center;
+        width: 60%;
+    }
+    
+    .full_box_view .yuqi {
+        padding: 6px 0 6px 30%;
+    }
+    
+    .full_box_view .btns_c {
+        display: flex;
+        border-top: 1px solid #eee;
+        padding-bottom: 6px;
+    }
+    
+    .full_box_view .btns_c .btn1 {
+        text-align: center;
+        flex: 1;
+        font-size: 18px;
+        padding: 10px 0;
+    }
+    
+    .full_box_view .btns_c .btn1.green {
+        color: #4AB79F;
+    }
+</style>
+
+<div class="full_box_view none">
+    <div class="pop_box">
+        <div class="box_content">
+            <div class="c_title">
+                <span class="edit_title"></span>/USDT
+            </div>
+            <div class="hang_sr">
+                <div class="label_c">{:lang("zyzs.止盈价")}</div>
+                <div class="input_box">
+                    <div class="jian1 jian" onclick="zhiying('zhiying','jian')">-</div>
+                    <input type="number"  class="input_zhiying edit_stop_profit" onchange="jishuan_yuqi()" value="-">
+                    <div class="jian2 jian" onclick="zhiying('zhiying','jia')">+</div>
+                </div>
+            </div>
+            <div class="yuqi">
+                {:lang("zyzs.预期盈利")}：<span class="yqyl">-</span>
+            </div>
+            <div class="hang_sr">
+                <div class="label_c">{:lang("zyzs.止损价")}</div>
+                <div class="input_box">
+                    <div class="jian1 jian" onclick="zhiying('zhisun','jian')">-</div>
+                    <input type="number"  class="input_zhisun edit_stop_loss" onchange="jishuan_yuqi()" value="-">
+                    <div class="jian2 jian" onclick="zhiying('zhisun','jia')">+</div>
+                </div>
+            </div>
+            <div class="yuqi">
+                {:lang("zyzs.预期亏损")}：<span class="yqks">-</span>
+            </div>
+        </div>
+
+        <div class="btns_c">
+            <div class="btn1" onclick="editZYZS(false)">{:lang("lend.lend_close")}</div>
+            <div class="btn1 green" onclick="editZYZS(true)">{:lang("lend.lend_confirm")}</div>
+        </div>
+    </div>
+</div>
+
+<div class="new-bg">
+
+    <!--主体-->
+
+    <div class="main">
+
+        <div class="lever-top">
+
+            <div class="deal-top-left deal-bg hidebox" id="kline_lists_box">
+
+                <a class="color-blue">{:lang('deal.USDT')}</a>
+
+                <table class="layui-table" lay-skin="nob" id="list_pro">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>{:lang('deal.left_symbol')}</th>
+
+                            <th lay-data="{field:'price', sort:true}">{:lang('deal.left_price')}</th>
+
+                            <th>{:lang('deal.left_change')}</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="symbol">
+
+                        {volist name="product" id="vo"}
+
+                        <tr data-value="{$vo.code}" id="left_list_{$vo.code}" style="cursor:pointer;">
+
+                            <td data-value="{$vo.code}">{$vo.title}</td>
+
+                            <td data-value="{$vo.code}" id="left_price_{$vo.code}">{$vo.last_price|floatVal}</td>
+
+                            <td data-value="{$vo.code}" id="left_change_{$vo.code}" {if $vo.change>0}class="color-green"{else}class="color-red"{/if}>{$vo.change|floatVal|fox_nums}%</td>
+
+                        </tr>
+
+                        {/volist}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            <div class="lever-top-left deal-bg hidebox" id="deal_top_box">
+
+                <div class="a-header layui-rows">
+
+                    <div class="layui-col-xs9 kline_coin_left"><i class="fa fa-bars"></i>
+
+                        <span class="trading_top_title_m"></span>
+
+                        <span class="trading_top_change_m"></span>
+
+                    </div>
+
+                    <div class="layui-col-xs3 text-right closea"><a href="javascript:void(0);" onclick="hide_all()"><i class="fa fa-times-circle-o"></i></a></div>
+
+                </div>
+
+                <div class="deal-top-center-title">
+
+                    <p class="layui-inline">
+
+                        <span id="trading_top_price"></span><br>
+
+                        <span>≈</span>
+
+                        <span id="trading_top_usd"></span>
+
+                        <span>$</span>
+
+                    </p>
+
+                    <p class="layui-inline">
+
+                        <span>{:lang('deal.top_high')}</span><br>
+
+                        <span class="color-grey" id="trading_top_high"></span>
+
+                    </p>
+
+                    <p class="layui-inline">
+
+                        <span>{:lang('deal.top_low')}</span><br>
+
+                        <span class="color-grey" id="trading_top_low"></span>
+
+                    </p>
+
+                    <p class="layui-inline">
+
+                        <span>{:lang('deal.top_volume')}</span><br>
+
+                        <span class="color-grey" id="trading_top_volume"></span>
+
+                    </p>
+
+                </div>
+
+                <div class="et-chart-wrap">
+
+                    <div class="et-chart-setting">
+
+                        <div class="times time-range" id="interval">
+
+                            <span data-value="1" data-kline="1">{:lang('kline_list.time')}</span>
+
+                            <span class="active" data-value="1">{:lang('kline_list.1_min')}</span>
+
+                            <span data-value="5">{:lang('kline_list.5_min')}</span>
+
+                            <span data-value="15">{:lang('kline_list.15_min')}</span>
+
+                            <span data-value="30">{:lang('kline_list.30_min')}</span>
+
+                            <span data-value="60">{:lang('kline_list.60_min')}</span>
+
+                            <span data-value="240">{:lang('kline_list.240_min')}</span>
+
+                            <span data-value="1d">{:lang('kline_list.1_day')}</span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="trading-view">
+
+                        <div id="tv_chart_container"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="lever-top-right deal-bg hidebox deal_trade_box">
+
+                <div class="a-header layui-rows">
+
+                    <div class="layui-col-xs9 kline_coin_left"><i class="fa fa-bars"></i>
+
+                        <span class="trading_top_title_m"></span>
+
+                        <span class="trading_top_change_m"></span>
+
+                    </div>
+
+                    <div class="layui-col-xs3 text-right closea"><a href="javascript:void(0);" onclick="hide_all()"><i class="fa fa-times-circle-o"></i></a></div>
+
+                </div>
+
+                <h5>
+
+                    {:lang('deal.depth_title')}
+
+                    <div class="trade-checkout">
+
+                        <span class="depth-biao" data-value="0"><img src="__STATIC__/mobile/img/trade-check-1.png" ></span>
+
+                        <span class="depth-biao" data-value="1"><img src="__STATIC__/mobile/img/trade-check-2.png" ></span>
+
+                        <span class="depth-biao" data-value="2"><img src="__STATIC__/mobile/img/trade-check-3.png" ></span>
+
+                    </div>
+
+                </h5>
+
+                <!-- <table class="layui-table" lay-skin="nob">
+
+				  <thead>
+
+				    <tr>
+
+				      <th>{:lang('deal.depth_redirect')}</th>
+
+				      <th>{:lang('deal.depth_price')}</th>
+
+				      <th>{:lang('deal.depth_total')}</th>
+
+				    </tr> 
+
+				  </thead>
+
+				  <tbody id="bids_box"></tbody>
+
+				  <tbody>
+
+					<tr><td colspan="3" class="depth-box">
+
+						<span class="color-green" id="right_price">000</span>
+
+						<span>≈</span>
+
+						<span id="right_price_usd"></span>
+
+						<span>$</span>
+
+					</td></tr>
+
+				  </tbody>
+
+				  <tbody id="asks_box"></tbody>
+
+				</table> -->
+
+            </div>
+
+        </div>
+
+        <div class="lever-bottom layui-rows first_box">
+
+            <div class="layui-row play-tab">
+
+                <div class="layui-col-xs6 text-right">
+
+                    <a href="{:url('leverdeal/index')}" class="layui-btn layui-btn-normal layui-btn-sm no-radius">{:lang('mobile_home.le_title')}</a></a>
+
+                </div>
+
+                <div class="layui-col-xs6 text-left">
+
+                    <a href="{:url('seconds/index')}" class="layui-btn layui-btn-primarys layui-btn-sm no-radius">{:lang('mobile_home.op_title')}</a></a>
+
+                </div>
+
+            </div>
+
+            <div class="a-header layui-rows">
+
+                <div class="layui-col-xs9 kline_coin_left"><i class="fa fa-bars"></i>
+
+                    <span class="trading_top_title_m"></span>
+
+                    <span class="trading_top_change_m"></span>
+
+                </div>
+
+                <div class="layui-col-xs3 text-right"><a href="javascript:void(0);" onclick="show_kline('deal_top_box','')"><i class="fa fa-line-chart" aria-hidden="true"></i></a></div>
+
+            </div>
+
+            <div class="lever-bottom-right deal-bg layui-row pd-10 mt-20">
+
+                <div class="layui-col-xs5 kline-box-depth">
+
+                    <table class="layui-table depth-table" lay-skin="nob">
+
+                        <tbody id="bids_box"></tbody>
+
+                        <tbody>
+
+                            <tr>
+                                <td colspan="2" class="depth-box">
+
+                                    <span class="color-green font-25" id="right_price">000</span>
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                        <tbody>
+
+                            <tr>
+                                <td colspan="2" class="depth-box">
+
+                                    <span>≈</span>
+
+                                    <span id="right_price_usd"></span>
+
+                                    <span>$</span>
+
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                        <tbody id="asks_box"></tbody>
+
+                    </table>
+
+                </div>
+
+                <div class="layui-col-xs7 kline-box-trade-level">
+
+                    <div class="layui-tab layui-tab-brief">
+
+                        <ul class="layui-tab-title">
+
+                            <li class="layui-this">{:lang('leverdeal.btn_buy')}</li>
+
+                            <li>{:lang('leverdeal.btn_sell')}</li>
+
+                        </ul>
+
+                        <div class="layui-tab-content">
+
+                            <input type="hidden" name="deal_price" value="0" autocomplete="off" class="layui-input deal-price">
+
+                            <input type="hidden" name="close_price" id="close_price" value="0" autocomplete="off" class="layui-input close-price">
+
+                            <div class="font-14">{:lang('leverdeal.can_use_money')}<span class="can-use-money span-margin"></span></span><span class="pro-tit span-margin"></span>
+
+                                <span class="le-play-time hidebox"></span>
+
+                                <span class="buy-play-time hidebox"></span>
+
+                                <span class="sell-play-time hidebox"></span>
+
+                                <span class="le-order-rate hidebox"></span>
+
+                                <br>{:lang('leverdeal.play_sxf_title')}：<span class="le-sx-fee-100 span-margin">0.3%</span>
+
+                                <span class="le-sx-fee hidebox"></span>
+
+                            </div>
+
+                            <div class="layui-tab-item layui-show">
+
+                                <div class="layui-col-xs12">
+
+                                    <form class="layui-form" action="">
+
+                                        <div class="layui-form-item">
+                                            <!--倍-->
+
+                                            <label class="layui-form-label">{:lang('leverdeal.play_time_title')}：</label>
+
+                                            <div class="layui-input-block">
+
+                                                <select name="play_time" class="play_time play_time_buy" lay-verify="required" lay-filter="playTime" data-type="buy">
+
+											</select>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="layui-form-item">
+
+                                            <!--手数-->
+                                            <label class="layui-form-label">{:lang('leverdeal.buy_account')}：</label>
+
+                                            <div class="layui-input-block position-re">
+
+                                                <input type="number" id="buy_account" name="account" value="0" lay-verify="required|buy_account" lay-verType="tips" autocomplete="off" class="layui-input">
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="layui-form-item mt-30" id="slideNum1"></div>
+
+
+                                        <div class="layui-form-item ">
+
+                                            <p>{:lang('leverdeal.max_num')}</p>
+
+                                            <p class="text-right">=<span class="buy_num_this span-margin"></span></p>
+
+                                        </div>
+
+                                        <div class="layui-form-item">
+
+                                            <p>{:lang('leverdeal.right_price_this')}</p>
+
+                                            <p class="text-right">=<span class="right_price_this right_price_this_left span-margin"></span>{:lang('leverdeal.after_usdt')}</p>
+
+                                        </div>
+
+                                        <div class="layui-form-item">
+
+                                            <p>{:lang('leverdeal.margin_this')}</p>
+
+                                            <p class="text-right">=<span class="buy_margin_this span-margin"></span>{:lang('leverdeal.after_usdt')}</p>
+
+                                        </div>
+
+                                        <div class="layui-form-item">
+
+                                            <p>{:lang('leverdeal.sxf_this')}</p>
+
+                                            <p class="text-right">=<span class="buy_sxf_this span-margin"></span>{:lang('leverdeal.after_usdt')}</p>
+
+                                        </div>
+
+                                        <div class="layui-form-item">
+
+                                            <button type="button" class="layui-btn btn-green" lay-submit lay-filter="buyForm">{:lang('leverdeal.btn_buy')}<span class="pro-tit span-margin"></span></button>
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                            <div class="layui-tab-item">
+
+                                <div class="layui-col-xs12">
+
+                                    <form class="layui-form" action="">
+
+                                        <div class="layui-form-item">
+
+                                            <label class="layui-form-label">{:lang('leverdeal.play_time_title')}：</label>
+
+                                            <div class="layui-input-block">
+
+                                                <select name="play_time" class="play_time play_time_sell" lay-verify="required" lay-filter="playTime" data-type="sell">
+
+											</select>
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="layui-form-item">
+
+                                            <label class="layui-form-label">{:lang('leverdeal.buy_account')}：</label>
+
+                                            <div class="layui-input-block position-re">
+
+                                                <input type="number" id="sell_account" name="account" value="0" lay-verify="required|sell_account" lay-verType="tips" autocomplete="off" class="layui-input">
+
+                                            </div>
+
+                                        </div>
+
+                                        <div class="layui-form-item mt-30" id="slideNum2"></div>
+
+
+<!--最大手数-->
+                                        <div class="layui-form-item ">
+
+                                            <p>{:lang('leverdeal.max_num')}</p>
+
+                                            <p class="text-right">≈<span class="sell_num_this span-margin"></span></p>
+
+                                        </div>
+
+                                        <div class="layui-form-item">
+
+                                            <p>{:lang('leverdeal.right_price_this')}</p>
+
+                                            <p class="text-right">≈<span class="right_price_this right_price_this_right span-margin"></span>{:lang('leverdeal.after_usdt')}</p>
+
+                                        </div>
+
+                                        <div class="layui-form-item">
+
+                                            <p>{:lang('leverdeal.margin_this')}</p>
+
+                                            <p class="text-right">≈<span class="sell_margin_this span-margin"></span>{:lang('leverdeal.after_usdt')}</p>
+
+                                        </div>
+
+                                        <div class="layui-form-item">
+
+                                            <p>{:lang('leverdeal.sxf_this')}</p>
+
+                                            <p class="text-right">≈<span class="sell_sxf_this span-margin"></span>{:lang('leverdeal.after_usdt')}</p>
+
+                                        </div>
+                                        <div class="layui-form-item">
+
+                                            <button type="button" class="layui-btn btn-red" lay-submit lay-filter="sellForm">{:lang('leverdeal.btn_sell')}<span class="pro-tit span-margin"></span></button>
+
+                                        </div>
+
+                                    </form>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="deal-bottom-left deal-bg padding-l-r mt-20">
+
+                <div class="layui-tab layui-tab-brief" lay-filter="tabList">
+
+                    <ul class="layui-tab-title">
+
+                        <li class="layui-this">{:lang('leverdeal.left_order')}</li>
+
+                        <li>{:lang('leverdeal.left_history')}</li>
+
+                    </ul>
+
+                    <div class="layui-tab-content mobile-layui-tab-content">
+
+                        <div class="layui-tab-item layui-show">
+
+                            <table class="layui-table fox-table" lay-skin="nob" lay-even>
+
+                                <colgroup>
+
+                                    <col width="30%">
+
+                                    <col width="50%">
+
+                                    <col width="20%">
+
+                                </colgroup>
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th><span class="table-span-list">{:lang('leverdeal.table_time')}/{:lang('leverdeal.table_style')}</span></th>
+
+                                        <th><span class="table-span-list">{:lang('leverdeal.table_buyprice')}/{:lang('leverdeal.table_nowprice')}/{:lang('leverdeal.table_account')}/{:lang('leverdeal.table_play')}</span></th>
+
+                                        <th><span class="table-span-list">{:lang('leverdeal.table_rates')}/{:lang('leverdeal.table_do')}</span></th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="lista">
+
+
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                        <div class="layui-tab-item">
+
+                            <table class="layui-table fox-table" lay-skin="nob" lay-even>
+
+                                <colgroup>
+
+                                    <col width="30%">
+
+                                    <col width="50%">
+
+                                    <col width="20%">
+
+                                </colgroup>
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th><span class="table-span-list">{:lang('leverdeal.table_time')}/{:lang('leverdeal.table_style')}</span></th>
+
+                                        <th><span class="table-span-list">{:lang('leverdeal.table_buyprice')}/{:lang('leverdeal.table_closeprice')}/{:lang('leverdeal.table_account')}/{:lang('leverdeal.table_play')}</span></th>
+
+                                        <th><span class="table-span-list">{:lang('leverdeal.table_rates')}/{:lang('leverdeal.table_salt')}</span></th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody id="listb">
+
+
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="hidebox" id="poster">
+
+    <img src="">
+
+</div>
+
+{include file="./block/mobile_footmenu"} {include file="./block/foot_script"}
+
+<script src="__STATIC__/mobile/js/socketset.js?v={php}echo time();{/php}"></script>
+
+<script src="__STATIC__/mobile/js/websocket.js?v={php}echo time();{/php}"></script>
+
+<script type="text/javascript" src="__STATIC__/mobile/lib/tablesort/tablesorter.js?v={$version}"></script>
+
+<script type="text/javascript">
+    let edit_Id = 0; //修改止盈止损的id
+    let edit_stop_profit = 0; //止盈
+    let edit_stop_loss = 0; //止损
+    let edit_account = 0; //购买数量
+    let edit_style = 1; //1做多 2做空
+    let edit_buy_price; //购买金额
+    let edit_title; //名称
+
+    function editZYZS(isSub) {
+        if (isSub) {
+            let zhiying = $(".input_zhiying").val();
+            let zhisun = $(".input_zhisun").val();
+            console.log(edit_Id, zhiying, zhisun);
+            $.post("/index/leverdeal/set_buy_end_stop", {
+                    id: edit_Id,
+                    stop_profit: zhiying,
+                    stop_loss: zhisun
+                },
+                function(res) {
+                    console.log(res)
+                    $(".full_box_view").addClass("none");
+                    refreshLista();
+                    layer.msg(res.msg, {
+                        time: 1800
+                    });
+                });
+        } else {
+            $(".full_box_view").addClass("none")
+        }
+    }
+
+    function editZYZSThis(id, stop_profit, stop_loss,style,buy_price,account,title) {
+        console.log(id)
+        edit_Id = id;
+        console.log(buy_price)
+        edit_stop_profit = stop_profit;
+        if (stop_profit==0){edit_stop_profit=buy_price}
+        edit_stop_loss = stop_loss;
+        if (edit_stop_loss==0){edit_stop_loss=buy_price}
+        edit_style = style;
+        edit_buy_price = buy_price;
+        edit_title = title;
+        edit_account=account;
+
+        $('.edit_title').text(edit_title)
+        $('.edit_stop_profit').val(edit_stop_profit)
+        $('.edit_stop_loss').val(edit_stop_loss)
+
+
+        $(".full_box_view").removeClass("none")
+        jishuan_yuqi();
+    }
+
+    //计算止盈止损的预期收益
+    function jishuan_yuqi() {
+        console.log(edit_stop_profit)
+        console.log(edit_buy_price)
+        console.log(edit_account)
+        //做多
+        if (edit_style==1){
+            ying= (edit_stop_profit-edit_buy_price)*edit_account
+            sun= (edit_buy_price-edit_stop_loss)*edit_account
+        }
+        //做空
+        else{
+            ying= (edit_buy_price-edit_stop_profit)*edit_account
+            sun= (edit_stop_loss-edit_buy_price)*edit_account
+        }
+        $('.yqyl').text(ying);
+        $('.yqks').text(sun);
+
+    }
+
+    $(function () {
+        $(".input_box").bind('input propertychange', function () {
+            edit_stop_profit = $(".edit_stop_profit").val();
+            console.log(edit_stop_profit);
+            edit_stop_loss = $(".edit_stop_loss").val();
+            console.log(edit_stop_loss);
+            jishuan_yuqi()
+        });
+    })
+
+    function zhiying(type1, type2) {
+        if (type1 == "zhiying") {
+            let zhiyingc = $(".input_zhiying").val();
+            if (type2 == 'jian') {
+                if (zhiyingc > 2) {
+                    zhiyingc--;
+                    $(".input_zhiying").val(zhiyingc);
+                }
+            } else
+            if (type2 == 'jia') {
+                zhiyingc++;
+                $(".input_zhiying").val(zhiyingc);
+            }
+            edit_stop_profit=zhiyingc;
+        } else
+        if (type1 == "zhisun") {
+            let zhiyingc = $(".input_zhisun").val();
+            if (type2 == 'jian') {
+                if (zhiyingc > 2) {
+                    zhiyingc--;
+                    $(".input_zhisun").val(zhiyingc);
+                }
+            } else
+            if (type2 == 'jia') {
+                zhiyingc++;
+                $(".input_zhisun").val(zhiyingc);
+            }
+            edit_stop_loss=zhiyingc;
+        }
+        jishuan_yuqi();
+    }
+</script>
+<!-- 拦截点击logo跳转 -->
+
+<script type="text/javascript">
+    var t;
+
+    var tasks = new Map();
+
+    // 定时计时任务，这里是1秒执行一次
+
+    setInterval(function() {
+
+        for (var key in tasks) {
+
+            tasks[key]();
+
+        }
+
+    }, 3000)
+
+    // 添加定时任务
+
+    function addTask(key, value) {
+
+        if (typeof value === "function") {
+
+            tasks[key] = value;
+
+        }
+
+    }
+
+    // 删除定时任务
+
+    function delTask(task) {
+
+        delete tasks[task];
+
+    }
+
+    /*function plusReady() {
+
+    var ws = plus.webview.currentWebview();
+
+    ws.overrideUrlLoading({
+
+    	mode: 'reject'
+
+    }, function(e) {
+
+    	console.log('url: ' + e.url);
+
+    })
+
+    }
+
+    document.addEventListener('plusready', plusReady, false);*/
+
+    $(function() {
+
+        sessionStorage.setItem("ins1", 0);
+
+        sessionStorage.setItem("ins2", 0);
+
+        socket.sendData({
+
+            type: 'kline',
+
+            find: 'leverdeal',
+
+        }, null, null)
+
+        $("#list_pro").DataTable({
+
+            "info": false,
+
+            columnDefs: [
+
+                {
+                    orderable: false,
+                    targets: 0
+                }
+
+            ],
+
+            "order": [],
+
+            "searching": false,
+
+            searchable: false,
+
+            paging: false
+
+        });
+
+    })
+
+    layui.use(['layer', 'element', 'jquery', 'slider', 'form', 'flow'], function() {
+
+        var layer = layui.layer
+
+        , element = layui.element
+
+        , $ = layui.jquery
+
+        , form = layui.form
+
+        , slider = layui.slider
+
+        var flow = layui.flow;
+
+
+
+        $.ajaxSetup({
+
+            headers: {
+
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+
+            }
+
+        });
+
+
+
+        form.verify({
+
+            stop_profit: function(value, item) {
+
+                var ze = /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/;
+
+                if (!ze.test(value)) //判断数字正确否
+
+                {
+
+                    return "{:lang('leverdeal.check_buy_account')}";
+
+                }
+
+            },
+
+            buy_account: function(value, item) {
+
+                var money = parseFloat($(".can-use-money").text());
+
+                if (money <= 0) {
+
+                    return "{:lang('leverdeal.check_nomony')}";
+
+                }
+
+                var ze = /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/;
+
+                if (!ze.test(value)) //判断数字正确否
+
+                {
+
+                    return "{:lang('leverdeal.check_buy_account')}";
+
+                }
+
+                var buymax = parseFloat($(".buy_num_this").text());
+
+                if (value > buymax) //判断最大量
+
+                {
+
+                    return "{:lang('leverdeal.check_buy_account_enough')}" + buymax;
+
+                }
+
+            },
+
+            sell_account: function(value, item) {
+
+                var money = parseFloat($(".can-use-money").text());
+
+                if (money <= 0) {
+
+                    return "{:lang('leverdeal.check_nomony')}";
+
+                }
+
+                var ze = /^(?!(0[0-9]{0,}$))[0-9]{1,}[.]{0,}[0-9]{0,}$/;
+
+                if (!ze.test(value)) //判断数字正确否
+
+                {
+
+                    return "{:lang('leverdeal.check_sell_account')}";
+
+                }
+
+                var sellmax = parseFloat($(".sell_num_this").text());
+
+                if (value > sellmax) //判断最大购买量
+
+                {
+
+                    return "{:lang('leverdeal.check_sell_account_enough')}" + sellmax;
+
+                }
+
+            }
+
+        });
+
+
+
+        element.on('tab(tabList)', function(data) {
+
+            if (data.index == 0) {
+
+                refreshLista();
+
+            }
+
+            if (data.index == 1) {
+
+                refreshListb();
+
+            }
+
+        });
+
+
+        window.orderThis = function(id) {
+
+            layer.msg("{:lang('leverdeal.do_ask')}", {
+
+                time: 0 //不自动关闭
+
+                ,
+                shade: 0.3
+
+                ,
+                area: ['250px', '100px']
+
+                ,
+                btn: ["{:lang('leverdeal.do_ask_yes')}", "{:lang('leverdeal.do_ask_no')}"]
+
+                ,
+                yes: function(index) {
+
+                    layer.close(index);
+
+                    $.post("{:url('leverdeal/order_this')}", {
+                        id: id
+                    }, function(res) {
+
+                        if (res.code > 0) {
+
+                            layer.msg(res.msg, {
+                                time: 1800
+                            }, function() {
+
+                                playTime();
+
+                                refreshLista();
+
+                            });
+
+                        } else {
+
+                            if (res.url) {
+
+                                layer.msg(res.msg, {
+                                    time: 1800
+                                }, function() {
+
+                                    location.href = res.url;
+
+                                });
+
+                            } else {
+
+                                layer.msg(res.msg, {
+                                    time: 1800
+                                });
+
+                            }
+
+                        }
+
+                    })
+
+                }
+
+            });
+
+        }
+
+
+
+        window.goThis = function(obj, id) {
+
+            addTask(obj, function() {
+
+                $.post("{:url('leverdeal/findorder')}", {
+                    id: id
+                }, function(res) {
+
+                    if (res.code > 0) {
+
+                        var data = res.data;
+
+                        var price = parseFloat(data.now_price);
+
+                        var win = parseFloat(data.yingkui).toFixed(4);
+
+                        $("#price_" + id).html(price);
+
+                        $("#win_" + id).html(win);
+
+                    } else {
+
+                        delTask(obj);
+
+                        $("#" + obj).remove();
+
+                        refreshListb();
+
+                    }
+
+                })
+
+
+
+            });
+
+        }
+
+
+
+        window.refreshLista = function() {
+
+            $('#lista').empty();
+
+            flow.load({
+
+                elem: '#lista' //指定列表容器
+
+                ,
+                colSpan: 3 //列数
+
+                ,
+                isAuto: true
+
+                ,
+                end: '<td colspan="3" class="text-center">{:lang("finance.finance_nodata")}</td>'
+
+                ,
+                done: function(page, next) { //到达临界点（默认滚动触发），触发下一页
+
+                    var lis = [];
+
+                    $.post("{:url('leverdeal/lista')}", {
+                        page: page,
+                        code: localsym
+                    }, function(res) {
+
+                        layui.each(res.data, function(index, item) {
+
+                            var html = '<tr id="list' + item.id + '">';
+
+                            html = html + '<td>' + item.create_time + '<br>';
+
+                            html = html + '<span class="leverdeal-color-' + item.style + '">' + item.ostyle + '</span><br>';
+
+                            html = html + '<span>{:lang("zyzs.止盈")}：</span>' + parseFloat(item.stop_profit) + '</td>';
+
+                            html = html + '<td>' + parseFloat(item.buy_price) + '<br>';
+
+                            html = html + '<span class="price_' + item.id + '" id="price_' + item.id + '">' + parseFloat(item.now_price) + '</span><br>';
+
+                            html = html + '' + parseFloat(item.zhangshu) + '/';
+
+                            html = html + '' + item.play_time + '<br><span>{:lang("zyzs.止损")}：</span>' + parseFloat(item.stop_loss) + '</td>';
+
+                            html = html + '<td><div data-id="' + item.id + '" class="share_trade"><a href="./detail.html?id='+item.id+'"></a></div><span id="win_' + item.id + '" class="win' + item.id + ' leverdeal-color-' + item.style + '">' + parseFloat(item.yingkui).toFixed(4) + '</span><br>';
+
+                            html = html + '<a href="javascript:void(0);" onclick="orderThis(' + item.id + ')" class="layui-btn layui-btn-xs fox-btn-xs layui-btn-warm">{:lang("leverdeal.do_btn")}</a><br>';
+                            html = html + '<a href="javascript:void(0);" onclick="editZYZSThis(' + item.id + ',' + item.stop_profit + ',' + item.stop_loss + ',' + item.style + ',' + item.buy_price + ',' + item.account + ',\'' + item.title + '\')" class="layui-btn layui-btn-xs fox-btn-xs layui-btn-normal">{:lang("leverdeal.修改")}</a><br>';
+
+
+                            html = html + '</tr>';
+
+                            lis.push(html);
+
+                            goThis("list" + item.id, item.id);
+
+                        });
+
+                        next(lis.join(''), page < res.pages);
+
+                    });
+
+                }
+
+            });
+
+        }
+
+
+
+        window.refreshListb = function() {
+
+            $('#listb').empty();
+
+            flow.load({
+
+                elem: '#listb' //指定列表容器
+
+                ,
+                colSpan: 3 //列数
+
+                ,
+                isAuto: true
+
+                ,
+                end: '<td colspan="3" class="text-center">{:lang("finance.finance_nodata")}</td>'
+
+                ,
+                done: function(page, next) { //到达临界点（默认滚动触发），触发下一页
+
+                    var lis = [];
+
+                    $.post("{:url('leverdeal/listb')}", {
+                        page: page,
+                        code: localsym
+                    }, function(res) {
+
+                        layui.each(res.data, function(index, item) {
+
+                            var html = '<tr>';
+
+                            html = html + '<td>' + item.create_time + '<br>';
+
+                            html = html + '<span class="leverdeal-color-' + item.style + '">' + item.ostyle + '</span></td>';
+
+                            html = html + '<td>' + parseFloat(item.buy_price) + '<br>' + parseFloat(item.now_price) + '<br>' + parseFloat(item.zhangshu) + '/';
+
+                            html = html + '' + item.play_time + '</td>';
+
+                            html = html + '<td><div data-id="' + item.id + '" class="share_trade"><a href="./detail.html?id='+item.id+'"></a></div><span class="leverdeal-color-' + item.style + '">' + item.owin + '</span><br>';
+
+                            html = html + '<span class="leverdeal-color-' + item.style + '">' + parseFloat(item.yingkui).toFixed(4) + '</span></td>';
+
+                            html = html + '</tr>';
+
+                            lis.push(html);
+
+                        });
+
+                        next(lis.join(''), page < res.pages);
+
+                    });
+
+                }
+
+            });
+
+        }
+
+
+
+
+
+        $('body').on('click', '.share_trade', function(data) {
+
+
+        self.location = './detail.html?id='+data.target.dataset.id;
+        return;
+
+            $.post("{:url('leverdeal/get_share')}", {
+                id: $(this).data('id')
+            }, function(res) {
+
+                var picurl = res;
+
+                $('#poster img').attr('src', picurl);
+
+                layer.open({
+
+                    type: 1
+
+                    ,
+                    title: false //不显示标题栏
+
+                    ,
+                    closeBtn: false
+
+                    ,
+                    area: ['100%', '100%']
+
+                    ,
+                    shade: 0.8
+
+                    ,
+                    id: 'LAY_layuiposter' //设定一个id，防止重复弹出
+
+                    ,
+                    resize: false
+
+                    ,
+                    btn: ["{:lang('member.member_poster_save')}", "{:lang('member.member_poster_no')}"]
+
+                    ,
+                    btnAlign: 'c'
+
+                    ,
+                    moveType: 1 //拖拽模式，0或者1
+
+                    ,
+                    content: $("#poster")
+
+                    ,
+                    yes: function(layero) {
+
+                        savePicture(picurl);
+
+                    },
+                    btn2: function(index, layero) {
+
+                        $('#poster img').attr('src', '');
+
+                    }
+
+                });
+
+            })
+
+        })
+
+        var triggerEvent = "touchstart";
+
+        function savePicture(Url) {
+
+            var blob = new Blob([''], {
+                type: 'application/octet-stream'
+            });
+
+            var url = URL.createObjectURL(blob);
+
+            var a = document.createElement('a');
+
+            a.href = Url;
+
+            a.download = Url.replace(/(.*\/)*([^.]+.*)/ig, "$2").split("?")[0];
+
+            var e = document.createEvent('MouseEvents');
+
+            e.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+
+            a.dispatchEvent(e);
+
+            URL.revokeObjectURL(url);
+
+        }
+
+        form.on('submit(buyForm)', function(data) {
+
+            if (data.field.account) {
+
+                var p = 0;
+
+                var can = parseFloat($(".can-use-money").text());
+
+                $(".win-price").each(function(index, item) {
+
+                    p += parseFloat($(item).text());
+
+
+
+                })
+
+
+
+                var money = parseFloat($(".can-use-money").text()) - p;
+
+                var buy_price = $("#close_price").val();
+
+                //手续费
+
+                var buy_sxf = parseFloat($(".buy_sxf_this").text());
+
+                //保证金
+
+                var buy_margin_this = parseFloat($(".buy_margin_this").text());
+
+                data.field.bzj_price = buy_margin_this;
+
+                data.field.buy_sxf = buy_sxf;
+
+                //买入价格
+                data.field.buy_price = buy_price;
+
+                //可用金额
+                data.field.money = money;
+
+                //代码
+                data.field.code = localsym;
+
+                data.field.style = 1;
+
+                loading = layer.load(1, {
+                    shade: [0.1, '#fff']
+                });
+
+                $.post("{:url('leverdeal/orderdo')}", data.field, function(res) {
+
+                    layer.close(loading);
+
+                    if (res.code > 0) {
+
+                        layer.msg(res.msg, {
+                            time: 1800
+                        }, function() {
+
+                            playTime();
+
+                            ins1.setValue(0);
+
+                            $('#buy_account').val(0);
+
+                            refreshLista();
+
+                        });
+
+                    } else {
+
+                        if (res.url) {
+
+                            layer.msg(res.msg, {
+                                time: 1800
+                            }, function() {
+
+                                location.href = res.url;
+
+                            });
+
+                        } else {
+
+                            layer.msg(res.msg, {
+                                time: 1800
+                            });
+
+                        }
+
+                    }
+
+                });
+
+            }
+
+            return false;
+
+        });
+
+
+
+        form.on('submit(sellForm)', function(data) {
+
+            if (data.field.account) {
+
+                var money = parseFloat($(".can-use-money").text());
+
+                var buy_price = $("#close_price").val();
+
+                //手续费
+
+                var buy_sxf = parseFloat($(".sell_sxf_this").text());
+
+                //保证金
+
+                var buy_margin_this = parseFloat($(".sell_margin_this").text());
+
+                data.field.bzj_price = buy_margin_this;
+
+                data.field.buy_sxf = buy_sxf;
+
+                data.field.buy_price = buy_price;
+
+                data.field.money = money;
+
+                data.field.code = localsym;
+
+                data.field.style = 2;
+
+                loading = layer.load(1, {
+                    shade: [0.1, '#fff']
+                });
+
+                $.post("{:url('leverdeal/orderdo')}", data.field, function(res) {
+
+                    layer.close(loading);
+
+                    if (res.code > 0) {
+
+                        layer.msg(res.msg, {
+                            time: 1800
+                        }, function() {
+
+                            playTime();
+
+                            ins2.setValue(0);
+
+                            $('#sell_account').val(0);
+
+                            refreshLista();
+
+                        });
+
+                    } else {
+
+                        if (res.url) {
+
+                            layer.msg(res.msg, {
+                                time: 1800
+                            }, function() {
+
+                                location.href = res.url;
+
+                            });
+
+                        } else {
+
+                            layer.msg(res.msg, {
+                                time: 1800
+                            });
+
+                        }
+
+                    }
+
+                });
+
+            }
+
+            return false;
+
+        });
+
+
+
+        var ins1 = slider.render({
+
+            elem: '#slideNum1'
+
+            ,
+            step: 1 //步长
+
+            ,
+            stepshow: 25 //间隔
+
+            ,
+            disabled: false
+
+            ,
+            showstep: true //开启间隔点
+
+            ,
+            setTips: function(value) { //自定义提示文本
+
+                return value + '%';
+
+            }
+
+            ,
+            change: function(value) {
+
+                var buymax = parseFloat($(".buy_num_this").text());
+
+                if (value > 0) {
+
+                    sessionStorage.setItem("ins1", value);
+
+                    $(".layui-slider .layui-slider-tips").show();
+
+                    var num = floatMul(buymax, value / 100);
+
+                    $('#buy_account').val(num);
+
+                } else {
+
+                    $('#buy_account').val(0);
+
+                }
+
+            }
+
+        });
+
+
+
+        var ins2 = slider.render({
+
+            elem: '#slideNum2'
+
+            ,
+            step: 1 //步长
+
+            ,
+            stepshow: 25 //间隔
+
+            ,
+            disabled: false
+
+            ,
+            showstep: true //开启间隔点
+
+            ,
+            theme: '#ef5656'
+
+            ,
+            setTips: function(value) { //自定义提示文本
+
+                return value + '%';
+
+            }
+
+            ,
+            change: function(value) {
+
+                var sellmax = parseFloat($(".sell_num_this").text());
+
+                if (value > 0) {
+
+                    sessionStorage.setItem("ins2", value);
+
+                    var num = floatMul(sellmax, value / 100);
+
+                    $('#sell_account').val(num);
+
+                } else {
+
+                    $('#sell_account').val(0);
+
+                }
+
+            }
+
+        });
+
+
+
+        $("#slideNum1 .layui-slider-wrap").on("touchstart", function(e) {
+
+            var startX = e.originalEvent.targetTouches[0].pageX; //开始坐标X
+
+            $(this).on('touchmove', function(e) {
+
+                arguments[0].preventDefault(); //阻止手机浏览器默认事件
+
+            });
+
+            $(this).on('touchend', function(e) {
+
+                var lenth = $("#slideNum1 .layui-slider").width();
+
+                var endX = e.originalEvent.changedTouches[0].pageX; //结束坐标X
+
+                e.stopPropagation(); //停止DOM事件逐层往上传播
+
+                var val = Math.floor((endX - startX) / lenth * 100);
+
+                if (val > 0 && val <= 100) {
+
+                    $("#slideNum1 .layui-slider .layui-slider-tips").show();
+
+                    var value = sessionStorage.getItem("ins1");
+
+                    if (value) {
+
+                        var num = parseInt(value) + parseInt(val);
+
+                    } else {
+
+                        var num = val;
+
+                    }
+
+                    if (num < 100) {
+
+                        sessionStorage.setItem("ins1", num);
+
+                    } else {
+
+                        sessionStorage.setItem("ins1", 100);
+
+                    }
+
+                    ins1.setValue(num);
+
+                    var buymax = parseFloat($(".buy_num_this").text());
+
+                    var nums = floatMul(buymax, value / 100);
+
+                    $('#buy_account').val(nums);
+
+                } else {
+
+                    $("#slideNum1 .layui-slider .layui-slider-tips").show();
+
+                    var value = sessionStorage.getItem("ins1");
+
+                    if (value) {
+
+                        var num = parseInt(value) + parseInt(val);
+
+                        if (num > 0) {
+
+                            ins1.setValue(num);
+
+                            var buymax = parseFloat($(".buy_num_this").text());
+
+                            var nums = floatMul(buymax, value / 100);
+
+                            $('#buy_account').val(nums);
+
+                            sessionStorage.setItem("ins1", num);
+
+                        } else {
+
+                            $("#slideNum1 .layui-slider .layui-slider-tips").hide();
+
+                            ins1.setValue(0);
+
+                            $('#buy_account').val(0);
+
+                            sessionStorage.removeItem("ins1");
+
+                        }
+
+                    }
+
+                }
+
+                $(this).off('touchmove touchend');
+
+            });
+
+        });
+
+
+
+        $("#slideNum2 .layui-slider-wrap").on("touchstart", function(e) {
+
+            var startX = e.originalEvent.targetTouches[0].pageX; //开始坐标X
+
+            $(this).on('touchmove', function(e) {
+
+                arguments[0].preventDefault(); //阻止手机浏览器默认事件
+
+            });
+
+            $(this).on('touchend', function(e) {
+
+                var lenth = $("#slideNum2 .layui-slider").width();
+
+                var endX = e.originalEvent.changedTouches[0].pageX; //结束坐标X
+
+                e.stopPropagation(); //停止DOM事件逐层往上传播
+
+                var val = Math.floor((endX - startX) / lenth * 100);
+
+                if (val > 0 && val <= 100) {
+
+                    $("#slideNum2 .layui-slider .layui-slider-tips").show();
+
+                    var value = sessionStorage.getItem("ins2");
+
+                    if (value) {
+
+                        var num = parseInt(value) + parseInt(val);
+
+                    } else {
+
+                        var num = val;
+
+                    }
+
+                    if (num < 100) {
+
+                        sessionStorage.setItem("ins2", num);
+
+                    } else {
+
+                        sessionStorage.setItem("ins2", 100);
+
+                    }
+
+                    ins2.setValue(num);
+
+                    var sellmax = parseFloat($(".sell_num_this").text());
+
+                    var nums = floatMul(sellmax, value / 100);
+
+                    $('#sell_account').val(nums);
+
+                } else {
+
+                    $("#slideNum2 .layui-slider .layui-slider-tips").show();
+
+                    var value = sessionStorage.getItem("ins1");
+
+                    if (value) {
+
+                        var num = parseInt(value) + parseInt(val);
+
+                        if (num > 0) {
+
+                            ins2.setValue(num);
+
+                            var sellmax = parseFloat($(".sell_num_this").text());
+
+                            var nums = floatMul(sellmax, value / 100);
+
+                            $('#sell_account').val(nums);
+
+                            sessionStorage.setItem("ins2", num);
+
+                        } else {
+
+                            $("#slideNum2 .layui-slider .layui-slider-tips").hide();
+
+                            ins2.setValue(0);
+
+                            $('#sell_account').val(0);
+
+                            sessionStorage.removeItem("ins2");
+
+                        }
+
+                    }
+
+                }
+
+                $(this).off('touchmove touchend');
+
+            });
+
+        });
+
+
+
+        window.playTime = function() {
+
+            //var title = "{:lang('leverdeal.play_time_title')}";
+            var title = "x";
+
+            $.post("{:url('leverdeal/get_play_time')}", {
+                code: localsym
+            }, function(res) {
+
+                if (res.code == 1) {
+
+                    var play_time = res.data.play_time
+
+                    var prophtml = '';
+
+                    for (var i = 0; i < play_time.length; i++) {
+
+                        if (i === 0) {
+
+                            $(".buy-play-time").text(play_time[i]);
+
+                            $(".sell-play-time").text(play_time[i]);
+
+                            prophtml = prophtml + '<option value="' + play_time[i] + '" selected>' + play_time[i] + title + '</option>';
+
+                        } else {
+
+                            prophtml = prophtml + '<option value="' + play_time[i] + '">' + play_time[i] + title + '</option>';
+
+                        }
+
+                    }
+
+                    $(".play_time").html(prophtml);
+
+                    form.render();
+
+                }
+
+            })
+
+        }
+
+
+
+        form.on('select(playTime)', function(data) {
+
+            var type = $(data.elem).data('type');
+
+            var value = data.value;
+
+            var price = parseFloat($("#right_price").text())
+
+            var margin = floatp(price, value)
+
+            $("." + type + "-play-time").html(value);
+
+            $("." + type + "_margin_this").html(margin);
+
+            var can = parseFloat($('.can-use-money').text())
+
+            var cans = parseFloat($("." + type + "-play-time").text())
+
+            var num = floatMul(can, cans)
+
+            $("." + type + "_num_this").html(num.toFixed(4));
+
+            if (type == 'buy') {
+
+                ins1.setValue(0);
+
+                $('#buy_account').val(0);
+
+            }
+
+            if (type == 'sell') {
+
+                ins2.setValue(0);
+
+                $('#sell_account').val(0);
+
+            }
+
+        });
+
+
+
+        $('.deal-price').bind('input propertychange change', function() {
+
+            refreshLista();
+
+            refreshListb();
+
+            playTime();
+
+        })
+
+
+
+        $('.close-price').bind('input propertychange change', function() {
+
+            //买入手数（多）
+            var buy = $("#buy_account").val();
+            //卖出手数(空）
+            var sell = $("#sell_account").val();
+            if(buy) {
+
+                let baozhengjin = parseFloat(buy * 1000);
+
+                $(".buy_sxf_this").html((baozhengjin * 0.003).toFixed(4));
+
+                $(".buy_margin_this").html(baozhengjin.toFixed(4));
+            }
+            else {
+
+                $(".buy_sxf_this").html("0.0000");
+
+                $(".buy_margin_this").html("0.0000");
+            }
+            if(sell) {
+
+                let baozhengjin = parseFloat(sell * 1000);
+
+                $(".sell_sxf_this").html((baozhengjin * 0.003).toFixed(4));
+
+                $(".sell_margin_this").html(baozhengjin.toFixed(4));
+            }
+            else{
+
+                $(".sell_sxf_this").html("0.0000");
+
+                $(".sell_margin_this").html("0.0000");
+            }
+
+            /*
+            if (buy > 0) {
+
+                //倍数
+                var value = parseFloat($(".buy-play-time").text())
+
+                //当前价格
+                var price = parseFloat($("#right_price").text())
+                //保证金（单手）
+                var margin = floatp(price, value)
+
+                margin = margin.toFixed(4)
+                //总保证金
+                var margins = floatMul(margin, buy)
+
+                $(".buy_margin_this").html(margins);
+
+                var sx_fee = parseFloat($(".le-sx-fee").text())
+
+                var sxf = floatMul(margin, sx_fee)
+
+                var fwf = floatMul(sxf, buy)
+
+                $(".buy_sxf_this").html(fwf);
+
+            } else {
+
+                var value = parseFloat($(".le-play-time").text())
+
+                var price = parseFloat($("#right_price").text())
+
+                var margin = floatp(price, value)
+
+                margin = margin.toFixed(4)
+
+                $(".buy_sxf_this").html("0.0000");
+
+                $(".buy_margin_this").html(margin);
+
+            }
+
+            if (sell > 0) {
+
+                var value = parseFloat($(".sell-play-time").text())
+
+                var price = parseFloat($("#right_price").text())
+
+                var margin = floatp(price, value)
+
+                margin = margin.toFixed(4)
+
+                var margins = floatMul(margin, sell)
+
+                $(".sell_margin_this").html(margins);
+
+                var sx_fee = parseFloat($(".le-sx-fee").text())
+
+                var sxf = floatMul(margin, sx_fee)
+
+                var fwf = floatMul(sxf, sell)
+
+                $(".sell_sxf_this").html(fwf);
+
+            } else {
+
+                var value = parseFloat($(".le-play-time").text())
+
+                var price = parseFloat($("#right_price").text())
+
+                var margin = floatp(price, value)
+
+                margin = margin.toFixed(4)
+
+                $(".sell_sxf_this").html("0.0000");
+
+                $(".sell_margin_this").html(margin);
+
+            }
+
+             */
+
+            var can = parseFloat($('.can-use-money').text())
+
+            var buyplay = parseFloat($('.buy-play-time').text())
+
+            var sellplay = parseFloat($('.sell-play-time').text())
+
+            var sellnum = floatMul(can, sellplay);
+
+            var buynum = floatMul(can, buyplay);
+
+            $(".sell_num_this").html(sellnum.toFixed(4));
+
+            $(".buy_num_this").html(buynum.toFixed(4));
+
+        })
+
+        refreshLista();
+
+        playTime();
+
+
+
+    })
+</script>
